@@ -1,0 +1,54 @@
+---
+title: 'Exercices : Visualisation des données'
+author: "Visseho Adjiwanou, PhD."
+date: "18/06/2024"
+output:
+  beamer_presentation: default
+  ioslides_presentation: default
+---
+
+
+## Exercice 1
+
+Les données **Data Developer Salary in 2024** décrivent les salaires des développeurs dans plusieurs pays. Ces données sont disponibles ici: 
+https://www.kaggle.com/datasets/zeesolver/data-eng-salary-2024
+
+Le directeur de votre compagnie vous fait appel pour faire parler ces données.
+
+1. Préparer une question de recherche à laquelle ces données peuvent permettre de donner une réponse.
+
+2. Pour votre question de recherche, quelles autres sources de données peuvent vous apporter une meilleure réponse?
+
+3. Présenter une série de graphiques qui permettent de répondre à la question posée en 1.
+
+## Exercice 2
+
+**Youtube_dataset_all_dataScience_channels.csv** est un ensemble de données qui fournit un aperçu détaillé des chaînes YouTube dédiées à la science des données et à l'analyse. Il comprend 22862 lignes, chacune représentant une vidéo unique avec différentes mesures d'engagement et détails de publication. L'ensemble de données vise à aider les chercheurs, les analystes de données et les passionnés à explorer et à analyser les tendances au sein de la communauté de la science des données sur YouTube.
+
+
+https://www.kaggle.com/datasets/abhishek0032/youtube-dataset-all-data-scienceanalyst-channels
+
+
+Vous utiliserez le fichier de données **mig** et **hdi** fourni sous format **.csv.**
+
+## Exercice 2
+
+1. Importer le fichier **mig.csv** dans RStudio.
+
+2. Créer un graphique à bandes empilées représentant la fréquence par province et territoires (**location**) selon le type de migration (**type**). Colorier les bandes selon le type de migration, labéliser convenablement les axes et donner un titre au graphique.
+
+## Exercice 2
+
+Créer des boites à moustache représentant les nombres de migration (**persons**) par province et territoires (**location**) selon le type de migration (**type**).
+
+## Exercice 3
+
+1. Importer le fichier **hdi.csv** dans RStudio.
+
+2. Représenter sur un nuage de points l'espérance de vie (**LifeExp**) en fonction du nombre d'années de scolarité attendu (**ExpYrsSchool**). Utiliser la palette de couleur brewer **Set2** pour distinguer les points selon le niveau de développement (**status**) et ajouter une ligne de tendance de couleur **or**. Labeliser enfin convenablement le graphique.
+
+## Exercice 4
+
+Avec le fichier **mig.csv**, représenter sur un même graphique l'évolution des entrées (**in-migration**) au cours de l'année 2016 (**quarter**) par province et territoires.
+
+

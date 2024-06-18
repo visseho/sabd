@@ -1,0 +1,847 @@
+---
+title: "Fertility"
+author:
+- Visseho Adjiwanou ^[corresponding author - adjiwanou.vissého@uqam.ca]
+- Sociology department, Université du Québec à Montréal (UQAM)
+- Ben Malinga John
+- Population Studies Department, University of Malawi
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  word_document: default
+  html_document: 
+    toc: true
+    toc_depth: 3
+  pdf_document: default
+  citation_package: natbib
+  template: svm-latex-ms2.tex 
+bibliography: library.bib
+header-includes:
+    - \usepackage{setspace}\doublespacing
+    - \usepackage{float}
+---
+
+<!--abstract: \singlespacing From the first billion population in the world in the 1800 to the projected 9.7 billions people for 2050, the world population has passed through various stages. This article search to present an up-to-date description of the fertility dynamics in different regions of the world. It aims to document the fertility dynamics in different regions of the world since the 1950s; review the literature on the determinants of fertility decline and assess empirically the fertility differentials according to the intermediate and distal determinants..
+keywords: "Fertility, Proximate determinants, Distal determinants, Sub-Saharan Africa, Asia, Europe and Northern America, Northern Africa, Latin America and the Caribean"-->
+
+# Abstract
+
+From the first billion population in the world in the 1800 to the projected 9.7 billions people for 2050, the world population has passed through various stages. This article search to present an up-to-date description of the fertility dynamics in different regions of the world. It aims to document the fertility dynamics in different regions of the world since the 1950s; review the literature on the determinants of fertility decline and assess empirically the fertility differentials according to the intermediate and distal determinants.
+
+**Keywords**: Fertility, Proximate determinants, Distal determinants, Sub-Saharan Africa, Asia, Europe and Northern America, Northern Africa, Latin America and the Caribean.
+
+# Introduction
+
+From the first billion population in the world in the 1800 to the projected 9.7 billions people for 2050, the world population has passed through various stages; that has often ignited fears and incomprehension, as well as optimism as the fertility has started to slow down in various part of the world. However, this demographic transition which indicates the shifting from a traditional regime where fertility and mortality are high and roughly balance, to a regime where birth rate and mortality are low and equally balanced, which has spread in all other regions of the world has been slow to materialize in sub-Saharan Africa. Fertility, though declining, is still very high in this part of the world. Indeed, between 2015 and 2050, the world's population is expected to increase by 2.4 billions; half of this increase will occur in sub-Saharan Africa. This demographic growth is characterized by a high demand for social services, a very high dependency ratio which limits the development possibilities of many countries in this region, and a factor of instability at the national and global level. But, it is also a source of economic progress as this fertility continues to fall, creating what is called a demographic dividend. It is important that the decline in fertility is continuous and sustained for this opportunity to materialize in order to permit qualitative investment in social services (education, health, etc.). Creating employment opportunities and enhancing good governance are also key to realizing this dividend.
+
+On the other side of the hemisphere, particularly in developed countries, the first transition has since ended and continued with a second transition triggered by the decline in fertility below 2.1 children per woman. This second demographic transition is characterized by structural (modernization, globalization, increased education), cultural (secularization, individual values, self-realization) and technological (modern contraception, assisted reproduction, new information technologies) changes [@reherDemographicTransitionRevisited2004; @vandekaaEuropeSecondDemographic1987]. Besides these changes, there are also shifts in the values and attitudes relating to family life (cohabitation, common-law union), motherhood (child is no longer the final goal of marriage) and sexuality (acceptance of pre-marital intercourse, use of contraception). For @sobotkaDiverseFacesSecond2008, these two groups of changes (behavioral and attitudes) influence each other to strengthen the second demographic transition on the one hand, and subsequently influence the fertility variables. The demographic transition has had major consequences in developed countries; it has been accompanied, among other things, by an ageing population, family instability, and a greater demand for immigrants, who increasingly come from predominantly non-western populations (as all Western countries face the same reality of (very)low fertility) and a source of increasing tension between local and migrants population.
+
+Thus, the postulated fertility convergence has not (yet) taken place throughout the world. Huge differences still remain between the North and the South, and within the same region/country, between various population groups. Substantial research has documented various aspects of the fertility regime in different parts of the world (Wright, encyclopedia).<!--, but few have documented the fertility dynamics globally (at the exception of UN population reports). A thorough and systematic investigation on the thousands or research conducted since the 1950, using a new methodological approach inspired by machine learning show different patterns of this research, cut by decencies more or less around the world population conferences: 
+1954 (Rome), 1965 (Belgrade), 1974 (Bucharest), 1984 (Mexico), 1994 (Cairo), 2004, 2014 
+- From 1950 to 1960:
+- From 1960 to 1970:
+- From 1970 to 1980:
+- from 1980 to 1990:
+- From 1990 to 2000:
+- From 2000 to 2010:
+- from 2010 to 2020
+
+https://www.un.org/en/development/devagenda/population.shtml
+-->
+
+This article search to present an up-to-date description of the fertility dynamics in different regions of the world. It aims to : 
+
+1. Document the fertility dynamics in different regions of the world since the 1950s;
+2. Review the literature on the determinants of fertility decline and ; 
+3. Assess empirically the fertility differentials according to the intermediate and distal determinants.
+
+To achieve these objectives, this paper draws data from different sources. The data from the UN population division has been primarily used to assess global fertility trends since the 1950, as well as to provide an empirical assessment of various parts of this article. The second source of data used is the Demographic and Health Survey data that has collected over 240 surveys in 84 countries since the 1980s. This second strand of data is appropriate to document fertility dynamics in developing countries, especially in countries in sub-Saharan Africa.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+rm(list = ls())
+#install.packages("xcrun")
+#install.packages("jstor")
+
+library(tidyverse)
+library(summarytools)
+library(ggpubr)
+library(gapminder)
+library(jstor)
+library(rdhs)
+library(readxl)
+library(xml2)
+library(XML)
+
+# Geographic region
+
+geo_region <- c("Africa", "Asia", "Europe", "Latin America and the Caribbean", "Northern America", "Oceania")
+
+#sdg_region <- c("SUB-SAHARAN AFRICA", "NORTHERN AFRICA AND WESTERN ASIA", "CENTRAL AND SOUTHERN ASIA", "EASTERN AND SOUTH-EASTERN ASIA", "LATIN AMERICA AND THE CARIBBEAN", "AUSTRALIA/NEW ZEALAND", "OCEANIA (EXCLUDING AUSTRALIA AND NEW ZEALAND)", "EUROPE AND NORTHERN AMERICA")
+
+sdg_region <- c("Sub-Saharan Africa (SSA)", "Northern Africa and Western Asia (NAWA)", "Central and Southern Asia (CESA)", "Eastern and South-Eastern Asia (EASA)", "Latin America and the Caribbean (LACA)", "Australia/New Zealand", "Oceania*", "Europe and Northern America (EUNA)") 
+
+```
+
+# I. Global and regional trends in fertility dynamics
+
+## I.1. Trends in the total fertility rate
+
+There are two ways to assess the pattern of fertility decline among different regions in the world, through the idea of $\beta$- and $\sigma$-convergence. According to @strulikFertilityTransitionWorld2015 : " $\beta$-convergence applies if countries of initially high fertility experience a stronger decline of fertility than countries of initially low fertility while $\sigma$-convergence occurs if the cross-sectional dispersion, measured by the standard deviation of fertility, for a group of countries declines over time." This idea is summarized in the figures 1 and 2.
+
+Figure 1 presents the trend in the total fertility rate since 1950 in various regions of the world. It is based on estimates produced by the UN Population Division.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+fertility <-read_xlsx("/Users/visseho/Documents/Documents - MacBook Pro/RESEARCH/Fertility_Oxford/Data/fertility_UN.xlsx", col_names = TRUE)
+
+fertility_pivot <-
+  fertility %>% 
+  pivot_longer(`1950-1955`:`2015-2020`, names_to = "Period", values_to = "TFR") %>% 
+  rename(Region = `Region, subregion, country or area *`) %>% 
+ # filter(Region %in% geo_region) %>% 
+  mutate(TFR = round(as.numeric(TFR), 2)) %>% 
+  mutate(Region = recode(Region, 
+         "AUSTRALIA/NEW ZEALAND" = "Australia/New Zealand",
+         "CENTRAL AND SOUTHERN ASIA" = "Central and Southern Asia (CESA)",
+         "SUB-SAHARAN AFRICA" = "Sub-Saharan Africa (SSA)", 
+         "NORTHERN AFRICA AND WESTERN ASIA" = "Northern Africa and Western Asia (NAWA)", 
+         "EASTERN AND SOUTH-EASTERN ASIA" = "Eastern and South-Eastern Asia (EASA)", 
+         "LATIN AMERICA AND THE CARIBBEAN" = "Latin America and the Caribbean (LACA)", 
+         "OCEANIA (EXCLUDING AUSTRALIA AND NEW ZEALAND)" = "Oceania*", 
+         "EUROPE AND NORTHERN AMERICA" = "Europe and Northern America (EUNA)"))
+
+## Palette de couleur: colorblind-friendly palette
+
+# The palette with grey:
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+# The palette with black:
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+
+## Fertility trend
+
+global_trend <-
+  ggplot(fertility_pivot %>%  filter(Region %in% sdg_region)) +
+  geom_line(aes(x = Period, y = TFR, group = Region, color = Region)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  theme(legend.direction = "vertical") +
+  labs(x = "Periods", y = "Total Fertility Rate", title = "Figure 1: Trend of the TFR in different regions, 1950-2020") +
+  scale_colour_manual(values = cbbPalette) 
+   
+global_trend
+
+ggsave(global_trend, file = "Figure1.png")
+
+```
+
+
+Figure 2 shows the disparities within each region as well as the change that has been achieved from the periods 1950-1955 to 2015-2020. Globally, these figures show that during 1950-1955, fertility in sub-Saharan Africa was not exception from most of the other world regions. In all other parts of the world (at the exception of the Europe and Northern America), the level of fertility fluctuated between 5.6 to 6.6 children per woman. However, in 2015-2020, SSA remains the sole region of the world where the level of fertility is still high, exceeding 4.5 children per woman. Thus, in early 1950,  most of the world’s countries belonged to the high-fertility regime, with fertility exceeding 5 children per woman in 70 percent of the countries. By the year 2015, this picture has reversed. The total fertility rate is less than 4 children per women in 80 percent of the countries and it exceeds 5 children per women only in 11 countries.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+fertility_sdg <-
+  fertility_pivot %>% 
+  mutate(Region_SDG = factor(case_when(
+    `Parent code` %in% c(910, 911, 913, 914) ~ "SSA",
+    `Parent code` %in% c(912, 922) ~ "NAWA",
+    `Parent code` %in% c(5500, 5501) ~ "CESA", # CENTRAL AND SOUTHERN ASIA
+    `Parent code` %in% c(915, 916, 931) ~ "LACA",
+    `Parent code` %in% c(928, 954, 957) ~ "OCEANIA*",
+    `Parent code` %in% c(927, 923, 924, 925, 926, 918) ~ "EUNA",
+    `Parent code` %in% c(906, 920) ~ "EASA")),
+    Region_sdg_long = factor(case_when(
+    `Parent code` %in% c(910, 911, 913, 914) ~ "Sub-Saharan Africa",
+    `Parent code` %in% c(912, 922) ~ "Northern Africa and Western Asia",
+    `Parent code` %in% c(5500, 5501) ~ "Central and Southern Asia",
+    `Parent code` %in% c(915, 916, 931) ~ "Latin America and the Caribbean",
+    `Parent code` %in% c(928, 954, 957) ~ "Oceania*",
+    `Parent code` %in% c(927, 923, 924, 925, 926, 918) ~ "Europe and Northern America",
+    `Parent code` %in% c(906, 920) ~ "EASA")))
+
+
+# Keep country and region_SDG - To use to merge with other data that miss region or country
+
+country_region <-
+  fertility_sdg %>% 
+  select(Region, Region_SDG, Region_sdg_long) %>% 
+  na.omit() %>% 
+  unique()
+
+# Country trend
+
+#cbb1Palette <- c("#E69F00", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
+
+country_trend <-
+  ggplot(fertility_sdg %>% filter(!is.na(Region_SDG)) %>% filter(Period %in% c("1950-1955", "2015-2020"))) +
+  geom_boxplot(aes(x = Region_SDG, y = TFR, color = Region_SDG)) +
+  geom_text(aes(x = Region_SDG, y = TFR, label = Region, color = Region_SDG), size = 1.5) + 
+  facet_grid(~Period) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  labs(x= "SDG regions", y = "Total fertility Rate", title = "Figure 2: Fertility change in various regions of the world, 1950 - 2020") +
+#  scale_color_manual(values = cbb1Palette)
+#  scale_color_hue(l=10) +
+#  scale_color_brewer(palette = "Accent") +
+  theme(legend.position = "none") 
+ 
+country_trend
+
+ggsave(country_trend, file = "Figure2.png")
+```
+
+
+### Europe and Northern America (+ Australia and New Zealand)
+
+These regions are the precursors of fertility decline in the world that has started in various part of Europe since the 1870s [@watkinsProvincesNationsDemographic1991]. As shown by the Figure 1, in 1950, the level of fertility oscillates between 2.5 and 4 children per woman (Figure 1), with various disparities between countries (Figure 2). The level of fertility is the highest in Austria with 6.2 children per woman and the lowest in Luxembourg (TFR around 2). In the period 2015-2020, none of the countries in the region has a fertility higher than the level of replacement of 2.1 children per woman, with very low disparities between the countries. During this period, many countries in the region have undergone what is commonly known as the lowest-low fertility regime, i.e a persistent low level of fertility over a long period of time [@billariAttitudesNormsPerceived2009; @caltabianoLowestlowFertilitySigns2009; @sobotkaLowestlowFertilityEurope2004]. This low level of fertility has attracted diverse policy initiative to reverse the course of the decline with limited effects [@thevenonPolitiquesFamilialesPays2008].
+
+### Sub-Saharan Africa
+
+The pace of the fertility decline in SSA has been slow and started only after 1980. In the period 1950-1955, the level of fertility is around 6.5 children per woman, with the highest fertility attained in Rwanda at 8 children per woman. At the same period, the lowest fertility in the region is observed in Gabon with 4 children per woman (mostly due to problem of sterility in the region, rather than as a result of family control policies). After the independence of these countries in the 1960s, the fertility increases subsequently to reach the level of 6.8 children per woman during the period 1975-1980. This period also coincides with an economic boom in many countries in the region. Since then, over a period of 40 years (from 1980), the median number of children per woman decreased from 6.8 to 4.8. In 2015-2020, 75% of the countries in SSA has a fertility level below five children per woman, whereas only two countries had fertility below this level in the 1950-1955. During the same period (2015-2020), 25% of the countries in the region have a total fertility rate fewer than 4 children per woman.
+
+A closer view of the fertility change in the various regions in sub-Saharan Africa (not presented) reveals that the decline has been mainly drained by countries in Southern and Eastern Africa while in Western and Central Africa, the change has been very modest. Another look at the fertility dynamic in the region is conducted by @tabutinDemographySubSaharanAfrica2004 who have demonstrated the different pathways taken by the fertility dynamics. The authors have shown how the course of the fertility transition in SSA have been affected by HIV and political instabilities including wars. In recent years, the slow pace of the fertility decline in SSA has attracted new research agenda around the idea of fertility stalling [@bongaartsFertilityTransitionsDeveloping2008; @goujonEducationStallsSubsequent2015; @schoumakerStallsFertilityTransitions2019]. Indeed, in various countries in SSA, and especially among the precursor of the fertility decline (Kenya and Ghana), the fertility has stabilized around 4 children per women and stop to decline further, prompting the discussion over the idea of the exceptionalism of the fertility transition in sub-Saharan Africa [@bongaartsAfricaUniqueFertility2017; @bongaartsFertilityTransitionSubSaharan2012]. 
+
+<!--The fertility regime in the other regions of the world fall between the European and the African regimes.-->
+
+### Northern Africa and Western Asia
+
+In Northern Africa and Western Asia, the level of fertility started to sharply slowdown during 1950-1955, until 2000-2005 when the pace of the decline has been altered. During this period (1950-1955), the level of fertility ranges from 2.8 in Georgia to 7.8 children per woman in Yemen. The median TFR is around 7 children per woman. For the period 2015-2020, the mean number of children per women in the region is around 3, with 75% of the countries having lower fertility than 3 children per woman. Besides, around one-quarter of the countries records a TFR of less than 2.1 children per women. The patterns of fertility stalling have been documented as well in some countries in this region [@cetorelliFertilityStallingJordan2012].
+
+### Central and Southern Asia
+
+The pace of the fertility decline in Central and Southern Asia is similar to the one in Northern Africa and Western Asia, at the difference that the fertility level in 1950-2955 is much lower and the decline has continued over the period 2000-2005 to reach 2.5 children per woman. In the period 2015-2020, almost all the countries in the region have a TFR over 2, with 75% of the countries in the region registering a TFR below 3. Globally, there is more convergence in the TFR between the countries from the 1950-1955 to 2015-2020. Afghanistan remains largely the country with the highest level of fertility with 7.5 children per woman in 1950-1955 and 4.3 in 2015-2020.
+
+### Eastern and South-Eastern Asia
+
+While the level of fertility is very similar to the one in Central and Southern Asia in 1950-1955, the fertility decline has been more drastic in the former region. The fertility level declines from 5.6 children per women in 1950-1955 to below the level of replacement in 2015-2020. More than half of the countries in the region have a very low fertility level. 
+
+### Latin America and the Caribbean
+
+The total fertility rate decreased from 5.8 children per woman in the period 1950-1955 to around 2 children per woman in the period 2015-2020. This change is accompanied fewer disparities between the countries in the region. The TFR varies between 2.3 (Uruguay) and 7.6 (Dominican Republic) in the period 1950-1955 to 1.6 (Puerto Rico) to 3.4 (French Guyana) during the period 2015-2020. As in the case of the European countries, almost half of the countries in this region have fertility below than 2 children per woman.
+
+
+##  I.2. Global and regional trend in fertility intention
+
+Various factors determine at last the level of fertility in a country/region, the dynamic of fertility intention is one of them. Thus, one way to document the fertility transition is to focus on the fertility intention, namely the desire for additional children, or the desired number of children. The analysis of fertility preferences has indeed proven to be instrumental in identifying potential family planning demands, understanding fertility inequalities between countries and regions, and in predicting future fertility trends. For example, in an attempt to understand the role of fertility preference in shaping fertility trends in SSA, @casterlineProspectsFertilityDecline2017 observed that demand for large family size was still prevalent in SSA relative to other regions. He consequently concluded that marked fertility decline in the region would require major shifts in fertility intentions and implementation of such desires. In the figure below, we review the changes in the mean ideal family size (MIFS) in four major regions (Figure 3, left panel) and assess the relationship between the MIFS and the TFR in recent years (Figure 3, right panel). 
+
+Figure 3 (left panel) indicates clearly that the MIFS has declined in all four regions, but still exceptionally high in various countries in sub-Saharan Africa. For the period 1990-1999, the median mean ideal family size was 3.4 in North Africa and West Asia NAWA), 2.9 in Eastern and Southern Asia (EASA), 3.1 in Latin America and the Caribbean (LACA) and highest in sub-Saharan (SSA) at 5.5. A similar pattern is revealed for the period 2010-2019, with sub-Saharan Africa registering a median mean ideal family size of 4.9, a mere 12 percent reduction relative to 1990-1999 estimate. 
+
+The figure in the right panel depicts a clear one-unit relationship between the MIFS and the TFR; in most of the countries, the MIFS mimics the TFR. Generally, the fertility desire is higher than the TFR suggesting that the fertility size documented previously did not always match the fertility desire at the individual level. This is exceptionally the case in Niger (9 versus 7.8) and Chad (8.2 versus 6.3). At the opposite, in Burundi, the TFR exceeds the MIFS by 1.5 children. 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+fertility_intention_wider <- read_xlsx("STATcompilerExport2020228_145251.xlsx") %>% 
+   left_join(country_region, by = c("Country Name" = "Region")) %>% 
+   pivot_wider(names_from = `Indicator`, values_from = "Value") %>% 
+   group_by(`Country Name`) %>% 
+  filter(abs(`Survey Year` - 1985) == min(abs(`Survey Year` - 1985)) | `Survey Year` == max(`Survey Year`, na.rm = TRUE)) %>%
+  mutate(year = if_else(`Survey Year` == min(`Survey Year`, na.rm = TRUE), "Oldest survey", "Recent survey"),
+         minYear = min(`Survey Year`, na.rm = TRUE),
+         maxYear = max(`Survey Year`, na.rm = TRUE),
+         Country = paste(`Country Name`, minYear, maxYear, sep = "-"))
+
+
+fertility_intention_wider1 <- 
+  fertility_intention_wider %>% 
+  pivot_wider(names_from = year, values_from = `Mean ideal number of children for all women`) %>% 
+  group_by(`Country Name`) %>% 
+  mutate(`Recent survey` = max(`Recent survey`, na.rm = TRUE))
+ # mutate(`Recent survey` = recode(`Recent survey`, NA == max(`Recent survey`, na.rm = TRUE)))
+
+old_recent <- ggplot(fertility_intention_wider1 %>%  filter(Region_SDG != "EUNA" & Region_SDG != "OCEANIA" & `Recent survey` != "-Inf")) +
+  geom_point(aes(x = `Oldest survey`, y = `Recent survey`, color = Region_SDG)) +
+  geom_abline(aes(intercept = 0, slope = 1)) +
+  geom_text(aes(x = `Oldest survey`, y = `Recent survey`, label = `Country Name`, color = Region_SDG), size = 2) + 
+#  scale_color_brewer(palette = "Set1") +
+  labs(title = "Figure 3a: Mean ideal number of children") +
+  theme(legend.position = "none") +
+  coord_fixed(ratio = 1) 
+
+ggsave(old_recent, file = "Figure_3a.png")
+#old_recent
+
+#freq(fertility_intention_wider$maxYear)
+
+tfr_minc <- ggplot(fertility_intention_wider %>%  filter(Region_SDG != "EUNA" & Region_SDG != "OCEANIA" & year == "Recent survey")) +
+  geom_point(aes(x = `Mean ideal number of children for all women`, y = `Total fertility rate 15-49`, color = Region_SDG)) +
+  geom_abline(aes(intercept = 0, slope = 1)) +
+  geom_text(aes(x = `Mean ideal number of children for all women`, y = `Total fertility rate 15-49`, label = `Country Name`, color = Region_SDG), size = 2) + 
+#  scale_color_brewer(palette = "Set1") +
+#  facet_wrap(~year) +
+  theme(legend.position = "bottom") +
+  coord_fixed(ratio = 1) 
+
+ggsave(tfr_minc, file = "Figure_3b.png")
+
+#tfr_minc
+
+ggarrange(old_recent, tfr_minc)
+
+
+
+```
+
+
+# II. Theories of fertility decline
+
+<!-- @kohlerEmergence2002; @reherDemographicTransitionRevisited2004;--> 
+Several theories have been developed over the years to understand the factors at work in shaping the fertility decline, and more generally the demographic transition. Even if the multiplicity of explanatory theories moved away from a strong and coherent unifying theory, each in its way shed some light on the fertility transition [@masonExplaningFertilityTransitions1997]. The theoretical framework proposed by @davisSocialStructureFertility1956 and taken up by @richardsDeterminantsFertilityDeveloping1983 presents the different factors that influence fertility, the levels of their relationship, but also the contribution of the various disciplines for the understanding of fertility [@leridonDevelopmentFertilityTheories2015]. However, it should be noted that if this conceptual framework is sufficient to explain the emergence of the fertility transition, it is imperfect to explain the very low fertility levels (below 1.5 children per woman). The latter also mobilized a large corpus of theories, structured around the notion of the second demographic transition [@vandekaaEuropeSecondDemographic1987]. We will not present in the context of this work a separate development of the two fertility transitions, we will situate ourselves in the logic of researchers who have attempted rather to unify the two currents, in particular, @caldwellDemographicTheoryLong2008 and @reherLongtermPopulationDecline2007.
+
+
+![Figure 4: Determinants of fertility ](/Users/visseho/OneDrive - UQAM/Oxford/Fertility_determinants.png)
+
+## II.1 The stimulus: the decline of child mortality
+<!-- Voir les travaux de Legrand [@legrandPossibleEffectsChild2002] -->
+
+The decline in mortality (especially of children) has created a favorable environment for the decline in fertility, by creating a discrepancy between the number of children attained and the number of children desired [@masonExplaningFertilityTransitions1997]. Admittedly, falling mortality does not automatically lead to falling fertility for two main reasons. Firstly, there are several other ways of dealing with excess children than by just limiting birth: there is migration among others. And second, because there is an information asymmetry between the moment when couples understand that the phenomenon that is happening is not cyclical, and the moment when they start by changing their behavior [@montgomeryPerceivingMortalityDecline2000]. 
+
+One of the precursors of this view is the paper by @notesteinPopulationLongView1945 that demonstrates that the central factor at work in the fertility decline has been the drop in mortality to a greater level than that of fertility. Consequently, the decline in mortality only appears as a stimulus or a mediating variable. However, the factors that created this stimulus also created an environment that will lead to "drastic social and economic changes". Indeed, with the industrial revolution, the development of cities appears where a new lifestyle emerges, turned towards individualism and the crumbling of the family structure, the self-fulfillment. So at the end, it is urbanization and modernization that will lead to lower fertility. It is interesting to note here that the changes described by @notesteinPopulationLongView1945 are the same that were described later by @vandekaaSecondDemographicTransition2004 and @lesthaegheDeuxiemeTransitionDemographique1995 in their formulation of the theory of the second demographic transition, but at significantly higher levels. The work by Notestein and later by the proponents of the economic determinant of fertility put a strong emphasis on the economic development to shape the fertility decline. <!--To the real economic influence, Davis will oppose the individual perception of a deterioration in living conditions (relative loss of status) and not by a degraded economic situation.-->
+
+In this process of declining fertility, contraception will play an important role in giving couples the means to reach their "new aspiration" in terms of fertility. Indeed, it becomes untenable for these couples to arrive at the "ideal" of urban life with a large offspring. This pressure is stronger than the values of yesteryear which kept fertility at very high levels. @notesteinPopulationLongView1945 does not deny the importance of values and attitudes, which he considers endogenous. For him, these values will change but very slowly so that he considers that it is "impossible to be precise about the various causal factors" (Chesnais, 1987 citing Notestein). The arguments against this view will be the central point of the theory of diffusion. If the decline in fertility in Europe has followed this pattern relatively, it is not the case in other environments which have experienced a decline in fertility without urbanization or modernization. This theory was partially criticized, however, in any event, Notestein has laid the groundwork for a theory that will develop and refine over years. 
+
+A contribution to this evolution of the discipline was made by @davisTheoryChangeResponse1963. The objective he aims for is no different from that of @notesteinPopulationLongView1945, that is, to explain the decline in fertility and analyze the factors that led to this. However, for @davisTheoryChangeResponse1963, a better understanding of the response to falling mortality in developed countries calls for a broadening perspective of these factors to include those that are not necessarily demographic and "quantifiable". <!--Indeed, by enclosing oneself in a black box which does not allow this opening, for fear or for lack of ambition, one lacks elements which can explain the passage from one state of high mortality and fertility to another more low. --> In his article, @davisTheoryChangeResponse1963 shows that there is a single transition from one state to another and that the triggering factor is the individual perception of deterioration in living conditions (relative loss of status) and not by a degraded economic situation. To arrive at this observation, it demonstrates that at the time of strong population decline, most of the countries studied (North-West Europe in the 18th century and Japan in the 19th century) experienced very high economic growth rates in comparison of the past. Under these conditions, we cannot speak of difficult or degraded living conditions. However, given the new economic environment that is coming, there is an increasing apprehension not to be able to correctly fit in, and therefore the perception of a degraded economic situation. Although the stimulus is the same for @notesteinPopulationLongView1945 and @davisTheoryChangeResponse1963, they do not agree on the ultimate fundamental factors of fertility decline.
+
+
+## II.2. Intermediate (or proximate) determinants of fertility decline
+
+The seminal papers by @davisSocialStructureFertility1956, and later by @bongaartsFrameworkAnalyzingProximate1978a have made a profound impact on the study of the determinants of fertility around the world by distinguishing the intermediate variables (what Bongaarts called proximate determinants) that affect directly fertility, and the various economic, sociological, and institutional factors that affect fertility only through these intermediate variables. Although, these intermediate variables carry the same effect in all societies, their relative importance and impact are different and have changed over the course of the demographic transition. 
+
+@davisSocialStructureFertility1956 consider three intermediate determinants of fertility: those affecting the exposure to intercourse, those affecting the exposure to conception and those affecting gestation and successful parturition. First, the factors that govern the exposure to intercourse mainly characterized by the formation and dissolution of the union, and the exposition to intercourse within the union. While at the onset of the fertility transition, the marriage regime has played a strong role in the level of fertility, it has regained a very limited effect on fertility since then. Throughout the world, not only age at the first marriage has increased but the the meaning of marriage has also very well altered especially in developed countries. Among the second intermediate factors documented in the the conceptual framework, one specific variable among this set of variables has received tremendous consideration due to its important influence on fertility: the contraception regime. They consider also fecundity and infecundity either affected by involuntary causes or voluntarily act (sterilization...). The final groups of factors include fetal mortality. 
+
+Reprocessed in a simpler mathematical form, @bongaartsFrameworkAnalyzingProximate1978a focuses his attention on a small and quantifiable number of determinants. He shown that the total fecundity rate (total marital fertility rate in the absence of lactation = 15.3) can be decomposed as part of an index of contraception (Cc), an index of proportion married (Cm), index of lactation infecundability (Ci) and an index of induced abortion (Ca) to produce the actual level of fertility (TFR) according to the formula: $$TFR = \text{Cm X Cc X Ca X Ci X TF}$$. 
+These indexes vary between 0 and 1, reflecting their reducing effect on the total fecundity rate. Since his publication, this framework has been extensively used to document various aspects of fertility change in various countries in the world or to compute some fertility-related outcomes (abortion for instance), while at the same time undergoes various clarifications [@stoverRevisingProximateDeterminants1998].
+
+
+
+# II.3. Distal determinants of fertility decline
+
+## II.3.1. Economic determinants of fertility
+
+From an economic and social point of view, two schools of thought have tried to explain the factors which motivate the decision of individuals (couples) to have children or determine the number of surviving children; and therefore, the level of overall fertility. However, the fundamental point of these approaches is that "the child" is considered as all economic good and that its "acquisition" depends on the factors of supply and demand. The first school, that of the Pennsylvania school of thought, conducted by the works of Easterlin [@easterlinEconomicsSociologyFertility2015; @easterlinRelationEconomicFactors1966], explains the level of fertility by external factors, both biological and social (supply side factor) that limit the number of surviving children; either directly through the regulation of the length of fertile life or indirectly through mortality. Thus, it appears that any social or economic change that influences these factors (for example, age at marriage, improvement in infant health, etc.) will have an immediate and obvious consequence on the fertility of couples. These sociological factors which condition the behavior of individuals are made up of social organization, cultural norms and sanctions. The authors cite the example of several societies where these standards exist or have existed and how they have affected fertility. They cite the case of West African societies (in the resumption of sexual relations after birth, etc.), the Hutterites (due to religion), the peoples of Lebanon (religion and dominance of other groups), Jews and Muslims in India.
+
+The second approach is at the demand side (Chicago School) and is led by the works by Becker [@beckerEvolutionFamily1991]. In this case, they are couples, "homo œconomicus", who make the decision to have children or not depending on the availability of other goods and the usefulness they derive from them under certain constraints. The homo-œconomicus hypothesis assumes that the number of children in a couple can be predicted once the other variables have been identified, that is, tastes or preferences are constant. In its first version (Chicago School), the constraints consist of relative costs and available resources. However, these constraints can either take several forms, biological, economic, security and time in Hobcraft and Kiernan; either come from social, religious or ethnic influence in @folbreWhoPaysKids1994. Clearly, when they decide to have children, couples assess the trade-off between the quality they wish to have of their children (and which therefore depend on their monetary, physical investment ...) and the quantity that allows them to ensure the expected level of quality. Becker's economic theory of fertility has had resounding success in understanding the decline in fertility, although it has also attracted much criticism.
+
+
+<!--
+En clair, quand ils décident d'avoir des enfants, les couplent évaluent le trade-off entre la qualité qu'ils souhaitent avoir de ses enfants (et qui dépendent donc de leur investissement monétaire, phisyque ...) et de la quantité qui leur permettent d'assurer le niveau de qualité attendu. La théorie économique de la fécondité de Baker a eu un rétentissant succès dans la compréhension du déclin de la fécondité, même si elle a également suscité beaucoup de critiques. 
+
+
+COMPLETER. Par ailleurs, s'ils permettent de mettre le raisonnement économique au coeur de l'étude d'un phénomène social,  la théorie économique de la fécondité est incapable d'expliquer les niveaux The fundamental criticism that can be made of this approach is to consider individuals as patient, attentive actors and subject without reluctance to the dictates of society and the family (see Bledsoe, example of West Africa) . On the contrary, according to Mc Nicoll, individuals appropriate the standards and try to adapt as best as possible to the institutional context that exists. It is this set that generates differential levels of fertility between societies.-->
+
+At the macro level, the economic transformation of the society embedded also the fertility decline in the world, and may explain the low level of fertility in Europe and Northern America. Indeed, for @caldwellDemographicTheoryLong2004, the main factor that led to the first decline in fertility, in particular the liberal economy, subsequently greatly strengthened, with the consequence that there was an inadequacy between fertility and the requirements of this new economic order. Clearly, very low fertility or low fertility is explained by the global economic system; the creation of the world economic system driven by liberal economic policies may prove in time to be the dominant force behind the low, particularly very low, fertility, and those welfare regimes, family systems and temporary economic crises will come to be seen as factors of second-order importance [@caldwellDemographicTheoryLong2004; @caldwellExplanationsFertilityCrisis2003]. Other factors are involved in this process to explain the low or very low levels of fertility. In fact, it is these secondary factors such as education, employment of women, laws and policies that explain the fertility differentials between countries. Like Notestein, he considers that values and attitudes are endogenous data which must be classified in secondary factors and which change very slightly. What is at stake is the strength of the stimulus that the liberal economic system has here. @chesnaisBibliographieCritique1987 will say "... cultural variables only appear as factors likely to advance or delay an evolution driven by the dynamics of modern economic growth". ^[Chesnais (1987) dira « …les variables culturelles ne paraissent plus que comme des facteurs susceptibles d’avancer ou de retarder une évolution impulsée par la dynamique de la croissance économique moderne »]. @herzerLongrunDeterminantsFertility2012 establish a causal effect of economic growth and of mortality decline on fertility decline using country level data for the twentieth century. However, there are certainly other forces at work as well since the specific pattern of the fertility transition differs substantially across countries and years [@reherDemographicTransitionRevisited2004; @leeDemographicTransitionThree2003].
+
+An alternative explanation of the low fertility level has been developed by van de Kaa who coined the term "second demographic transition". In a simplified way, the second demographic transition, therefore, refers to a set of changes both in the fertility behaviors and in the values that supported traditional behaviors. On the one hand, it is this interrelation between these two aspects from which comes inter alias the difficulty of establishing this theory in a concrete and intelligible manner. Although there is much criticism of it, the theory of the second demographic transition appears to be the most coherent way of analyzing the changes taking place in fertility patterns in Europe [@sobotkaDiverseFacesSecond2008]. Thus, the goal pursued by the author is twofold: to analyze, on the one hand, the influence of the second demographic transition on fertility variables (delayed motherhood, the proportion of births outside marriage, very low fertility levels). On the other hand, to analyze how this transition was established in the European countries given that these did not have a uniform level of development.
+
+<!--Concretely, the second demographic transition is characterized by structural (modernization, globalization, increased education), cultural (secularization, individual values, self-realization) and technological (modern contraception, assisted reproduction, new information technologies) changes. Besides these changes, there are also changes in the values and attitudes relating to family life (cohabitation, common-law union), motherhood (child is no longer the final goal of marriage) and sexuality (acceptance of pre-marital intercourse, contraception). For Sobotka (2008), these two groups of changes (behavioral vs attitudes) influence each other to reinforce the second demographic transition on the one hand and subsequently influence the fertility variables mentioned above. However, the order in which they influence each other depends on the prevailing economic conditions. Likewise, education has played a key role in bringing about these changes, even if the author has only revealed the differences in fertility outcomes compared to education. The analysis conducted by Reher (2007) seems more rigorous and more relevant.-->
+
+<!--
+religion, education, polity (government) beyond economy?
+- **Cultural explanation**
+
+Cultural explanations of fertility differences
+J. Clyde Mitchell (a1) 
+DOI: https://doi-org.proxy.bibliotheques.uqam.ca/10.1017/S0021932000023671Published online by Cambridge University Press: 27 September 2011
+
+Watkins, S. C, 1995. « États, réseaux et rythme du déclin de la fécondité en Angleterre et en France », dans H.Gérard et V. Piché (éds.), La Sociologie des populations, Les presses de l’Université de Montréal, AUPELFUREF, pp. 171-188.
+
+-->
+
+## II.3.2. Diffusion and social network
+
+Economic theories have played an important role in explaining the fertility decline as much as relegating other explanatory mechanisms to the background. However, the variability over time and space of the influence of the economy on fertility, the differential in magnitude and the absence of a threshold, call into question the only economic explanation for the fertility decline [@johnson-hanksFertilityTransitionCultural2015]. Unlike the economic approach, the cultural approach to explaining the decline in fertility is structured around a social organization, cultural norms and sanctions. In pre-transitional societies, the system of social organization, religious values and moral codes govern all aspects of people's lives (family, economic, political). These standards are organized to maintain a high level of fertility. The theory of diffusion of innovation offers a coherent framework for analyzing the non-economic determinants of the fertility transition.
+
+The theory of diffusion of innovation brings together several theoretical currents which have taken root in different disciplines, notably in sociology (Montgomery et al. 2003; Sampson 2003) in the theories of social disorganization (Shaw and McKay 1942), of social capital (Coleman 1988) and collective efficiency (Sampson et al. 1997; Sampson et al. 1999). Diffusion is defined as a: "process by which an innovation is communicated through certain channels over time among the members of a social system" (Roger, 1983, p. 5). Applied to fertility, dissemination refers: "the spread or adoption of new information, ideas, beliefs, or social norms capable of influencing reproduction decisions and behavior that occurs through social interaction and influence, either at the interpersonal level or through impersonal channels such as the mass media ”(Reed et al., 1999, p. 7, citing Mason and Sinding,). It differs from classical theory by postulating that the decline in fertility is not (solely) due to demographic, economic or social structure changes. The decline in fertility also comes from the diffusion of new forms of attitudes and behaviors that begin beforehand within a given group, and which spreads throughout the population as a whole [@montgomerySocialLearningSocial1996; @casterlineDiffusionProcessesFertility2001]. Thus according to this theory "fertility decline is the consequence of the increased prevalence of attitudes and behaviors that were previously very rare or absent in the population (ie, they are innovative), and their increased prevalence is the consequence of the spread of these attitudes and behaviors from some segments in the population to others, ie, a diffusion process [@casterlineDiffusionProcessesFertility2001].
+
+The diffusion theory mainly distinguishes two streams: the one specific to innovation (that is what is diffused) and the second which concerns on how this innovation will spread to the whole population. Each of its streams has been the subject of important theoretical developments. With regard to innovation, while the work of @knodelLessonsPolicyImplications1979 and later of @watkinsLocalNationalCommunities1990 will focus on the new types of behavior which are diffused within the population and which will lower fertility (cultural approach ), the ideational theory of @clelandDemandTheoriesFertility1987 will focus on the importance of innovations in ideas (information, standards, etc.). Watkins' work has for example focused on the influence of culture and language on fertility differentials in pre-transitional Europe [@bongaartsSocialInteractionsContemporary1996; @watkinsEtatsReseauxRythme1995]. The fundamental criticism that can be made of this approach is to consider individuals as patient, attentive actors and subject without reluctance to the dictates of society and the family (see @bledsoeTransformationsSubSaharanAfrican1990, example of West Africa). On the contrary, according to Mc Nicoll, individuals appropriate the standards and try to adapt as best as possible to the institutional context in which they live. It is this set that generates differential levels of fertility between societies. On the other hand, according to the ideational approach to fertility, the timing of the demographic transition depends on the dissemination of information and new social norms concerning birth control. Caldwell's works on the importance of Western values conveyed by education on the decline in fertility in Africa must also be placed in this second vision [@caldwellTheoryFertilityDecline1982].
+
+The second current of thoughts is concerned with how innovations appear, are diffused and the role of the actors in this diffusion. According to this current of thought, innovations spread through two mechanisms: either through social learning or through social influence [@behrmanSocialNetworksChanges2002; @montgomerySocialLearningSocial1996]. According to these authors, social learning "reduces the uncertainties about an innovation "and thus leads individuals to adopt this new change without great cost [@kohlerLearningSocialNetworks1997; @kohlerDensitySocialNetworks2001]. This is the case with the use of a new contraceptive method in a given group. Members outside this group can also adopt this method based mainly on the beneficial effects of the first users or on the contrary by using it differently because of the problems that "It has generated in this first group. Social influence" implies a reinforcement or not of social norms through examples of behaviors which can be copied by others " [@montgomerySocialLearningSocial1996; @keimWhoRelevantExploring2009]. If interest is growing today for the study of these mechanisms in the diffusion process, the lack of knowledge on their role in the demographic changes pointed out more than 20 years ago, still holds today [@keimWhoRelevantExploring2009]. This current of thought will give an important place to social networks and the mass media as a vehicle through which innovations will spread to the whole population. Its founding premise is based on the interdependence of individual actions and the structure (social networks) in which they take shape [@wassermanSocialNetworkAnalysis1994]. Different types of networks have been studied in connection with fertility diffusion, including mainly informal communication networks [@behrmanSocialNetworksChanges2002; @entwisleCommunityContraceptiveChoice1996; @kohlerLearningSocialNetworks1997; @valenteSocialNetworkAssociations1997; @watkinsWomenGossipSocial1995], and family networks [@keimTieStrengthFamily2013; @keimWhoRelevantExploring2009]
+
+
+<!--
+Neyer_Gender-Equality-and-Fertility-Which-Equality-MattersEgalit-de-genre-et-fcondit-De-quelle-galit-sagitil2013European-Journal-of-Population
+
+McDonald: gender equity
+Possibly link the social networks’ studies to the gender norms’ discussion, since the former is more the direct manifestation and the latter the indirect.
+
+Bavel
+[@vanbavelDiffusionEffectsEuropean2004]
+
+-->
+
+## II.3.3. Government policy
+
+
+The only voice prescribed by the classical model to reduce fertility is economic development. Any other voice appears unrealistic in this context, as evidenced by the slogan, "The best condom is development". Likewise, according to @pritchettDesiredFertilityImpact1994, family planning policies are not about reducing the desire for fertility (which is essential to trigger decline) but rather about meeting the unmet need for family planning. It should be noted, however, that most of the theories give an important place to institutions (family, or state) to set up the conditions which either favor economic development, reduce the influence of fertility standards (age at marriage for example) or allow better dissemination of information or the provision and circulation of innovation (family planning). In both developed and developing countries, the success of these policies remains mixed. In fact, a precondition for the decline in legitimate fertility according to Coale is that "fertility limitation must enter into the 'calculus of conscious choice' - that is, parents must be able to entertain the idea that they could choose, even approximately, the number of children that they bear ”. Also, if fertility does not enter this conscious pattern, any external policy will be doomed to failure. We will briefly look at population policies in developing countries (which are interested in reducing fertility) and in developed countries (whose more recent policies are aimed at raising fertility). @ouedraogoFertilityPopulationPolicy2018 show how population policies changed in the world from 1976 to 2013. In 2013, 51 countries have a pro-natalist policy (all of Europe) and 76 an anti-natalist policy, including almost the majority of African countries. Forty years earlier, these numbers are 18 and 55 respectively (including very few African countries).
+
+In developing countries, two particularly important policies are related to education policies and family planning policies. Caldwell's pioneering work in West Africa has shown the importance of education as an engine of reproductive change, either by giving women access to information, increasing their autonomy or by adopting new Western values [@caldwellTheoryFertilityDecline1982]. Several studies have thus shown empirically that the level of education of women is thus strongly correlated with their level of fertility [@10.2307/3595729; @10.2307/41940995]. The commitment of countries at the Jomtien education conference in 1990 and the international population conference in Cairo in 1994 resulted in increased investment in education to both strengthen the education of women and their decision-making power within their household and the community.
+
+While it was introduced without problems in developed countries, in particular with the support of states, family planning encountered more reluctance in developing countries at its inception and continues to raise questions in certain countries [@ouedraogoFertilityPopulationPolicy2018], even if the importance of family planning is no longer to be demonstrated in the decline in fertility, maternal and child health, and the economic opportunities it creates [@davanzoFamilyPlanningDeveloping1998]. Indeed, according to Bulatao, a vigorous family planning policy contributed 40% to the decline in fertility from 6 children per woman in the 1960s to 3 children per woman, 30 years later [@bulataoValueFamilyPlanning1998]. It is also credited that the economic success of the dragons of Asia (South Korea, Singapore, Hong Kong, Taiwan and Japan) is partly explained by this control of their fertility. In sub-Saharan Africa, Zimbabwe, Kenya and Ghana have pioneered the adoption of a vigorous family planning policy. It is therefore only natural that the fertility transition has started in these countries. More recently, Rwanda has been active in promoting family planning. Between 2005 and 2010, the use of modern contraception increased from 17% among married and union women to 52%. At the same time, fertility fell by 25%, from 6.1 to 4.6 children per woman [@westoffRecentFertilityTransition2013].
+
+In developed countries, population policy aims to raise fertility above the generation replacement level. These policies are not uniform and include a set of objectives of raising fertility, work/child balance, reduction of economic inequality and family poverty, care and education of children, and balanced sharing of family tasks [@thevenonPolitiquesFamilialesPays2008]. However, most of these policies tend rather to affect the timing of the phenomenon (age at childbirth) rather than its intensity (number of children. According to @mcdonaldPolitiquesSoutienFecondite2002 (p440) "... a (fertility) policy really effective will almost certainly require changes in the social and economic organization of an entirely different magnitude ”^[«. . . une politique (de fécondité) vraiment efficace nécessitera presque à coup sûr des modifications de l’organisation sociale et économique d’une tout autre ampleur»].
+
+# III. An empirical assessment of the determinants of fertility in the world
+
+In this last part of the article, we will analyze on the one hand, the evolution of certain direct determinants in particular marriage and contraception in different parts of the world. On the other hand, we will focus on two indirect determinants which are the level of education and the autonomy of women and analyze empirically their influence on fertility.
+
+<!--Dans cette dernière partie de l'article, nous allons analyser d'une part, l'évolution de certains déterminants directs notamment le marriage et la contraception dans les différentes parties du monde. De l'autre, nous allons nous intéresser à deux déterminants indirects que sont le niveau d'éducation et l'autonomie de la femme et analyser empiriquement leur influence sur la fécondité. -->
+
+## III.1. Intermediate determinants of fertility
+  
+### III.1.1. Marriage patterns
+
+We present the marriage patterns related to the age at first marriage and level of marriage. United Nations data make it possible to follow the trend of the average age at first marriage in the countries of the different regions. We have looked at this evolution over the period of the 1990s and for the more recent period (around 2015) for both men and women (Figures 5a to 5d).
+
+<!--les données des Nations-Unies permettent de suivre l'évolution de l'âge moyen au premier mariage dans les pays des différentes région. Nous avons regardé cette évolution sur la période des années 1990 et pour la période plus récente à la fois pour les hommes et les femmes (Figures 5a à 5d). -->
+
+- **Europe and Northern America (+ Australia and New Zealand)**
+
+Figure 5a shows the exceptional high level of the average age at first marriage in Europe and North America. On average in this region, the average age at first marriage has increased from 24.90 years among women in the 1990s to 29.12 years in more recent years. For men, it increased from 27.90 to 31.76 years over the same period.
+
+<!--La Figure 5a montre l'exceptionnel niveau élevé de l'âge moyen au premier mariage en Europe et en Amérique du Nord. En moyenne, dans cette région, l'âge moyen au premier mariage est passé de ... chez les femmes dans les années 1990 à ... dans les années plus récentes. Chez les hommes, il est passé de ... à ... au cours de la même période. -->
+
+<!--the mean age at first marriage has increased by 4.6 years since 1990.-->
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+marriage_UN <- read_xlsx("Marriage_UN.xlsx", sheet = "SMAM", skip = 2)
+
+marriage_UN_complet <- left_join(marriage_UN, country_region, by = c("Country or area" = "Region"))
+
+marriage_EUNA_UN <-
+  marriage_UN_complet %>% 
+  filter(Region_SDG == "EUNA") %>% 
+  group_by(`Country or area`) %>% 
+  filter(abs(`YearStart` - 1990) == min(abs(`YearStart` - 1990)) | `YearStart` == max(`YearStart`, na.rm = TRUE)) %>%
+  mutate(year = if_else(`YearStart` == min(`YearStart`, na.rm = TRUE), "Oldest survey", "Recent survey"),
+         minYear = min(`YearStart`, na.rm = TRUE),
+         maxYear = max(`YearStart`, na.rm = TRUE),
+         Country = paste(`Country or area`, minYear, maxYear, sep = "-"))
+
+marriage_EUNA_UN_table <-
+  marriage_EUNA_UN %>% 
+  group_by(`Country or area`) %>% 
+  filter(YearStart == maxYear) %>%
+  ungroup() %>% 
+  group_by(Sex) %>% 
+  summarise(moyenneEUNA = mean(DataValue))
+
+#marriage_EUNA_UN_table
+
+cPalette <- c("#D55E00", "#0072B2")
+
+marriage_EUNA <-
+ggplot(marriage_EUNA_UN, aes(x = Country, y = DataValue)) +
+ # geom_point(aes(color = paste(Sex, year, sep = "-"))) +
+  geom_point(aes(color = year)) +
+  theme_bw() +
+  labs(x = "Europe and Northern America", y = "Singulate mean age at first marriage", title = "Figure 5a: Singulate mean age at first marriage, 1990s vs 2020s, EUNA") +
+ # theme(legend.title = element_text("Periods")) +
+ # scale_colour_discrete("Year") +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1)) +
+  scale_color_manual(values = cPalette) +
+#  labs(fill = "Year") +
+  facet_wrap(~Sex, nrow = 2) 
+
+
+ggsave(marriage_EUNA, file = "Figure_5a.png")     
+
+marriage_EUNA
+
+```
+
+
+<!--
+![Figure: Mean age at first marriage, 1990 to 2014](/Users/visseho/OneDrive - UQAM/Cours/SOC1060_Demographie/Image_cours_demo/s5.4.png)
+-->
+
+- **Sub-Saharan Africa**
+
+In sub-Saharan Africa, more and more girls start their reproductive life later as well, but the change is very lower compared to the other regions in the world. The Figure 5.b shows that on average, that the mean age at first marriage increased by 2 years, from 20.48 years in 1990 to 22.19 years in the 2015 for women. For men, this increase is fewer than 1 year, from 26.30 years to 27.27 years. Again, in the majority of the countries in this region, the mean age at first marriage is below 20 years for women. Marriage continues to play a strong role in fertility dynamics in sub-Saharan Africa, more than elsewhere in the world.  
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+#library(readxl)
+
+Western_Africa <- c("Benin", "Burkina Faso", "Cote d'Ivoire", "Gambia", "Ghana", "Guinea", "Liberia", "Mali", "Mauritania", "Niger", "Nigeria", "Senegal", "Sierra Leone", "Togo")
+
+Middle_Africa <- c("Angola", "Cameroon", "Central African Republic", "Chad", "Congo", "Congo Democratic Republic", "Gabon", "Sao Tome and Principe")
+
+Eastern_Africa <- c("Burundi", "Comoros", "Eritrea", "Ethiopia", "Kenya", "Madagascar", "Malawi", "Mozambique", "Rwanda", "Sudan", "Tanzania", "Uganda", "Zambia", "Zimbabwe")
+
+Southern_Africa <- c("Botswana", "Eswatini", "Lesotho", "Namibia", "South Africa")
+
+SSA <- c(Western_Africa, Middle_Africa, Eastern_Africa, Southern_Africa)
+
+# North Africa and western Asia
+NAWA <- c("Egypt", "Morocco", "Tunisia", "Armenia", "Azerbaijan", "Jordan", "Turkey", "Yemen")
+
+# CENTRAL AND SOUTHERN ASIA
+CESA <- c("Kazakhstan", "Kyrgyz Republic", "Tajikistan", "Turkmenistan", "Uzbekistan", "Afghanistan", "Bangladesh", "Cambodia", "India", "Indonesia", "Maldives", "Myanmar", "Nepal", "Pakistan", "Philippines", "Sri Lanka", "Thailand", "Timor-Leste", "Vietnam")
+ 
+# Latina America and the carribean
+
+LACA <- c("Bolivia", "Brazil", "Colombia", "Dominican Republic", "Ecuador", "El Salvador", "Guatemala", "Guyana", "Haiti", "Honduras", "Mexico", "Nicaragua", "Paraguay", "Peru", "Trinidad and Tobago")
+
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+marriage_SSA_UN <-
+  marriage_UN_complet %>% 
+  filter(Region_SDG == "SSA") %>% 
+  group_by(`Country or area`) %>% 
+  filter(abs(`YearStart` - 1985) == min(abs(`YearStart` - 1985)) | `YearStart` == max(`YearStart`, na.rm = TRUE)) %>%
+  mutate(year = if_else(`YearStart` == min(`YearStart`, na.rm = TRUE), "Oldest survey", "Recent survey"),
+         minYear = min(`YearStart`, na.rm = TRUE),
+         maxYear = max(`YearStart`, na.rm = TRUE),
+         Country = paste(`Country or area`, minYear, maxYear, sep = "-"))
+
+
+marriage_SSA_UN_table <-
+  marriage_SSA_UN %>% 
+  group_by(`Country or area`) %>% 
+  filter(YearStart == maxYear) %>%
+  ungroup() %>% 
+  group_by(Sex) %>% 
+  summarise(moyenneSSA = mean(DataValue))
+
+#marriage_SSA_UN_table
+
+
+
+marriage_SSA <-
+ggplot(marriage_SSA_UN, aes(x = Country, y = DataValue)) +
+#  geom_point(aes(color = paste(Sex, year, sep = "-"))) +
+  geom_point(aes(color = year)) +
+  theme_bw() +
+  labs(x = "Sub-Saharan Africa", y = "Singulate mean age at first marriage", title = "Figure 5b: Singulate mean age at first marriage, 1990s vs 2020s, SSA") +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1)) +
+  scale_color_manual(values = cPalette) +
+  facet_wrap(~Sex, nrow = 2)
+
+ggsave(marriage_SSA, file = "Figure_5b.png", scale=2)     
+marriage_SSA
+
+```
+
+
+- **Northern Africa and Western Asia**
+
+Figure 5c presents the trend in the mean age at first marriage in northern Africa and Western Asia. In most of the countries, the mean age at first marriage for women is 22.77 years years in the 1990 and has increased to 24.82 years in the 2015s. For men, the mean age at first marriage is above 25 years, passing on the average from 26.40 years in the 1990s to 28.89 years in recent years.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+marriage_NAWA_UN <- 
+  marriage_UN_complet %>% 
+  filter(Region_SDG == "NAWA") %>% 
+  group_by(`Country or area`) %>% 
+  filter(abs(`YearStart` - 1985) == min(abs(`YearStart` - 1985)) | `YearStart` == max(`YearStart`, na.rm = TRUE)) %>%
+  mutate(year = if_else(`YearStart` == min(`YearStart`, na.rm = TRUE), "Oldest survey", "Recent survey"),
+         minYear = min(`YearStart`, na.rm = TRUE),
+         maxYear = max(`YearStart`, na.rm = TRUE),
+         Country = paste(`Country or area`, minYear, maxYear, sep = "-"))
+
+marriage_NAWA_UN_table <-
+  marriage_NAWA_UN %>% 
+  group_by(`Country or area`) %>% 
+  filter(YearStart == maxYear) %>%
+  ungroup() %>% 
+  group_by(Sex) %>% 
+  summarise(moyenneNAWA = mean(DataValue))
+
+#marriage_NAWA_UN_table
+
+
+marriage_NAWA <-
+ggplot(marriage_NAWA_UN, aes(x = Country, y = DataValue)) +
+#  geom_point(aes(color = paste(Sex, year, sep = "-"))) +
+  geom_point(aes(color = year)) +
+  theme_bw() +
+  labs(x = "Northern Africa and Western Asia", y = "Singulate mean age at first marriage", title = "Figure 5c: Singulate mean age at first marriage, 1990s vs 2020s, NAWA") +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1)) +
+  scale_color_manual(values = cPalette) +
+  facet_wrap(~Sex, nrow = 2)
+
+ggsave(marriage_NAWA, file = "Figure_5c.png", scale=2)     
+marriage_NAWA
+
+```
+
+
+- **Central and Southern Asia**
+
+Finally, in Central and Southern Asia, the marriage patterns are similar to the one observed in sub-Saharan Africa, with the age at first marriage on average around 20.41 years for women and 23.80 years for men. However, the increase has beeen substantial in this region compared to SSA; in recent years, the average for women is 21.89 years and 25.53 years for men.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+marriage_CESA_UN <- 
+  marriage_UN_complet %>% 
+  filter(Region_SDG == "CESA") %>% 
+  group_by(`Country or area`) %>% 
+  filter(abs(`YearStart` - 1985) == min(abs(`YearStart` - 1985)) | `YearStart` == max(`YearStart`, na.rm = TRUE)) %>%
+  mutate(year = if_else(`YearStart` == min(`YearStart`, na.rm = TRUE), "Oldest survey", "Recent survey"),
+         minYear = min(`YearStart`, na.rm = TRUE),
+         maxYear = max(`YearStart`, na.rm = TRUE),
+         Country = paste(`Country or area`, minYear, maxYear, sep = "-"))
+
+marriage_CESA_UN_table <-
+  marriage_CESA_UN %>% 
+  group_by(`Country or area`) %>% 
+  filter(YearStart == maxYear) %>%
+  ungroup() %>% 
+  group_by(Sex) %>% 
+  summarise(moyenneCESA = mean(DataValue))
+
+#marriage_CESA_UN_table
+
+marriage_CESA <-
+ggplot(marriage_CESA_UN, aes(x = Country, y = DataValue)) +
+#  geom_point(aes(color = paste(Sex, year, sep = "-"))) +
+  geom_point(aes(color = year)) +
+  theme_bw() +
+  labs(x = "Central and Southern Asia", y = "Singulate mean age at first marriage", title = "Figure 5d: Singulate mean age at first marriage, 1990s vs 2020s, CESA") +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1)) +
+  scale_color_manual(values = cPalette) +
+  facet_wrap(~Sex, nrow = 2)
+
+ggsave(marriage_CESA, file = "Figure_5d.png", scale=2)     
+marriage_CESA
+
+
+```
+
+
+
+The increase in the age at first marriage is reminiscent of a radical change in conjugal lifestyles all around the world with the emergence of new forms of partnering and the increase in the rate of divorce and remarriage. This change in the marriage patterns as shown previously show a strong difference within a different structure (educational level, income, place of residence...) in the countries.  
+
+
+### III.1.2 Cohabitation
+
+Another pattern of marriage dynamic is the cohabitation that takes place in various countries in the world and especially in Europe and Northern America. Indeed, in this region, there is a disconnection between age at marriage and fertility which is one aspect of the second demographic transition [@beaujotDeuxTransitionsDemographiques2000; @lesthaegheTransitionsDemographiquesSocietes1995; @vandekaaEuropeSecondDemographic1987]. Marriage is no longer the place of procreation. In fact, it has dropped considerably in most countries in Europe and North America, where more and more children are born outside the union of both parents. These children are born into a new form of family structure which is cohabitation. The difficulty in measuring marriage in Africa has often led to putting marriages together with cohabitation, which does not allow us to follow the evolution of the two phenomena well. This is also the case here.
+
+<!--En effet, dans cette région, il y a une déconnection entre l'âge au mariage et la fécondité  qui est l'un des aspects de la seconde transition démographique (Beaujot, 2000 ; Lesthaeghe, 1995 ; Van de Kaa, 1987). Le mariage n'est plus le lieu de la procréation. D'ailleurs, il s'est beaucoup abaissé dans la plupart des pays d'Europe et d'Amérique du Nord où de plus en plus d'enfants naissent hors union des deux parents. En fait, ces enfants naissent au sein d'une nouvelles forme de structure familiale qui est la cohabitation. Nous illustrons cette tendance avec les contextes de l'Europe et de l'Amérique du Nord avec celle de l'Afrique sub-Saharienne. La difficulté à mesurer le marriage en Afrique a souvent conduit à mettre ensemble les marriages avec les cohabitations, ce qui ne permet pas de bien suivre l'évolution des deux phénomènes. C'est d'ailleurs le cas ici. -->
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+marriage_trend <- read_xlsx("Estimates and projections of MWRA 1970-2030_Rev-2018.xlsx", sheet = "Percentage by Country", skip = 3)  %>% 
+  left_join(country_region, by = c("Country or area" = "Region")) %>% 
+  filter(str_detect(AgeGroup, "15-49"))
+
+marriage_table <-
+  marriage_trend %>% 
+  filter(Year <=  2020) %>% 
+  group_by(Region_SDG, Year) %>% 
+  summarise(mean_prop = mean(DataValue))
+
+#marriage_table
+
+marriage_trend_graph <-
+  ggplot(marriage_table) +
+  geom_line(data = marriage_table, aes(x = Year, y = mean_prop, group = Region_SDG, color = Region_SDG)) +
+ # geom_point(data = marriage_table, aes(x = Year, y = mean_prop, group = Region_SDG, color = Region_SDG)) +
+
+  geom_text(data = marriage_table %>%  filter(Year == 2020), 
+            aes(x = Year + 5, y = mean_prop, label = Region_SDG, color = Region_SDG)) +
+  labs(y = "Percentage", title = "Figure 6: Average proportion of married and in-union women, 15-59 years") +
+    theme_bw() +
+  theme(legend.position = "none") +
+  scale_colour_manual(values = cbbPalette) 
+
+ggsave(marriage_trend_graph, file = "Figure6.png")
+  
+marriage_trend_graph
+```
+
+Figure 6 presents the trend in the proportion of women aged 15-49 who are either married or in-union in the different regions. In all the regions, this trend decreases over the years. Central and Southern Asia remains the region in the world with the high proportion of women aged 15-49 married or in-union. The proportion of married women passes 72.8% in 1970 to 68.7% in 2020. At the opposite, the proportion of married or in-union women is the lowest in Latin America and the Caribbean. In Europe and Northern America, 65.2% of women are married or in-union in 1970 and 54.9% in 2020. More detail data from the OECD further show that close to half of this marriage are in-union relationship in recent years.
+
+
+### III.1.3. Contraception patterns
+
+- **Trend**
+
+<!--
+https://www.un.org/en/development/desa/population/publications/dataset/contraception/wcu2019.asp
+https://www.un.org/en/development/desa/population/theme/family-planning/cp_model.asp
+-->
+
+The use of modern contraceptive is globally accepted as the most effective approach for fertility control. Consequently, the dynamics of contraceptive use within and between countries or regions is regarded as the dominant force shaping variation in-country and regional fertility trends. Figure 7 presents the trend in modern contraceptive use in various regions of the world from 1994 to 2019. As expected, the modern contraceptive use has increased substantially all around the world and exceptionnally in SSA (even if its level is still very low in many countries in this region). In 1994, in half of the countries in SSA, the average modern contraceptive use was about 5%. In 2019, this median increased to 25%, ranging from 5% in South Sudan to 52% in Eswatini. In Northern Africa and Western Asia, the increase in modern contraceptive use has been slower, where the median passed from 20% in 1994 to 24% in 2019. The Figure depicts the trend in the rest of the regions as well, with Europe and Northern America showing the region with the highest use of modern contraceptive.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+contraception_UN <- read_xlsx("Contraception_UN_1994-2019.xlsx")
+
+contraception_UN_complet <- left_join(contraception_UN, country_region, by = c("Country or area" = "Region")) %>% 
+#
+#contraception_EUNA_UN <-
+#  contraception_UN_complet %>% 
+  filter(str_detect(Indicator, "CPmod") & str_detect(`Median estimate and uncertainty intervals`, "Median") & str_detect(`Marital status`, "AW")) %>% 
+  group_by(`Country or area`) %>% 
+  mutate(year = if_else(Year == min(Year, na.rm = TRUE), "Oldest survey", "Recent survey"),
+         Country = paste(`Country or area`, 1994, 2019, sep = "-"))
+
+
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+contraception_globally <-
+ggplot(contraception_UN_complet %>% filter(!is.na(Region_SDG)), aes(x = Region_SDG, y = Percentage)) +
+ # geom_point(aes(color = paste(Sex, year, sep = "-"))) +
+  geom_boxplot(aes(color = Region_SDG)) +
+  geom_text(aes(label = `Country or area`, color = Region_SDG), size = 1.5) +
+  theme_bw() +
+  labs(x = "Region", y = "Modern contraceptive use", title = "Figure 7: Trend in modern contraceptives use, 1994-2019") +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1)) +
+  facet_wrap(~Year) +
+  theme(legend.position = "none")
+
+ggsave(contraception_globally, file = "Figure7.png", scale=2)  
+
+contraception_globally
+
+
+```
+
+
+Figure 8 illustrates the dynamics of contraceptive use for various methods from 1994 to 2019 from @unitednationsContraceptiveUseMethod2019.  First, we note marked inequalities in popularity of contraceptive methods by region. Injectables are predominantly used in SSA, while IUDs are commonly used in Eastern and South-eastern Asia. In Latin American and the Caribbean countries and Central and Southern Asia, women frequently use female sterilization, while pills are predominately used in Europe and northern American, Northern African and Western Asia and in Oceania countries. The use of injectable and implants has risen across all regions, with a substantial increase registered in SSA. On the other hand, the use of the rhythm method has declined in all the regions. Female sterilization has dropped except in Central and Southern Asia and in Northern Africa and Western Asia. There appear fewer changes in the use of IUD (except for Oceania region where it has evidently increased) and male sterilization (except for Eastern and South-Eastern Asia where it has clearly decreased). In contrast, the use of male condoms and female sterilization has changed markedly, with significant change observed in Eastern and South-Eastern Asia. 
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Figure 8: Trend in contraceptive methods"}
+
+knitr::include_graphics("/Users/visseho/OneDrive - UQAM/Oxford/Contraception_by_method_region.png")
+?include_graphics
+
+```
+
+- **Association between contraception and TFR**
+
+Fertility is predominantly high in populations where contraceptive prevalence is low and falls with increasing modern contraceptive use. Although the strength of this relationship may vary by region and the stage of the fertility transition, it appears to be universal. This is well depicted in Figure 9 that shows the association between total fertility and the percent of all women using modern contraceptive methods. In both earlier and recent surveys, the majority of countries in SSA had lower contraceptive prevalence corresponding with high levels of fertility. On the other hand, the majority of countries in Latin America and the Caribbean, EASA and CESA reported high use of modern contraceptive which parallel their low levels of fertility. However, we note few exceptional cases in both earlier and recent surveys in Northern African and Western Asia, where low contraceptive use is linked with extremely low fertility. This trend is explained by a high prevalence of induced abortion in these countries. Figure 9 also reveals that the slope of the regression line is steeper in an earlier survey as compared to what we get from the most recent survey. This manifests the changing pattern of contraceptive use effects over the course of fertility decline, with stronger effects observed at the onset of the fertility transition.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+contraception_fertility <- read_xlsx("STATcompilerExport2020228_171325.xlsx") %>% 
+   left_join(country_region, by = c("Country Name" = "Region")) %>% 
+   pivot_wider(names_from = `Indicator`, values_from = "Value") %>% 
+   group_by(`Country Name`) %>% 
+  filter(abs(`Survey Year` - 1985) == min(abs(`Survey Year` - 1985)) | `Survey Year` == max(`Survey Year`, na.rm = TRUE)) %>%
+  mutate(year = if_else(`Survey Year` == min(`Survey Year`, na.rm = TRUE), "Oldest survey", "Recent survey"),
+         minYear = min(`Survey Year`, na.rm = TRUE),
+         maxYear = max(`Survey Year`, na.rm = TRUE),
+         Country = paste(`Country Name`, minYear, maxYear, sep = "-"))
+
+contraception_fert_graph <- 
+ggplot(contraception_fertility %>%  filter(Region_SDG != "EUNA" & Region_SDG != "OCEANIA")) +
+  geom_point(aes(x = `Current use of any modern method of contraception (all women)`, y = `Total fertility rate 15-49`, color = Region_SDG)) +
+  geom_text(aes(x = `Current use of any modern method of contraception (all women)`, y = `Total fertility rate 15-49`, label = `Country Name`, color = Region_SDG), size = 2) + 
+  geom_smooth(aes(x = `Current use of any modern method of contraception (all women)`, y = `Total fertility rate 15-49`), method = "lm", se = FALSE) +
+  theme_bw() +
+    scale_colour_manual(values = cbbPalette) +
+  facet_wrap(~year) +
+  labs(title = "Figure 8: TFR and modern contraceptive use in various periods (1990s versus 2015s")
+
+ggsave(contraception_fert_graph, file = "Figure8.png")
+contraception_fert_graph
+```
+
+
+## III.2. An empirical assessment of the distal determinants of fertility in the world
+
+
+### III.2.1. Education and fertility level and intention
+
+The link between fertility and education is complex, nevertheless, one thing is certain; fertility of women with no education is generally higher as compared to women with more years of schooling. Some scholars have explained this relationship using the economic theory of fertility. This school of thought has argued that educated women are more likely to emphasis quality (children with good health, education and social interaction) rather than quantity of children, therefore have higher human capital investment per child. This inherently induces the desire to limit childbearing. An alternative argument along this economic theory relates to high opportunity cost associated with childbearing. Educated women may find raising children more competing with attractive opportunities in the labor market, thus they may deliberately intent to have fewer children to realize their economic goals. Furthermore, there is substantial evidence revealing that attainment of high education level is allied with delaying the formation of union and initiation of childbearing which consequently reduces a woman’s reproductive lifespan. This biologically constrains the supply of children during childbearing years.
+
+On the other hand, some researchers have considered the link between fertility and education within the context of an ideational theory of fertility. The underlining argument suggests that educated women desire smaller families, which may be influenced by better communication and social networks. Better civilized and social networks that come with higher education allows diffusion of information that generally considers, for example, large family size, short birth intervals and use of traditional births control methods as an unpopular lifestyle for a modern woman. Thus, the norms, attitudes and behavior concerning these childbearing ideals are  strikingly different among educated women relative to their illiterate counterparts. Indeed, there is extensive evidence in the literature indicating that educated women, not only have desire for smaller family size than women with no formal of schooling , but also have longer birth intervals and have higher levels of knowledge and adoption of modern birth control methods.
+
+Because the mechanisms through which education influence fertility are so diverse, its impact on fertility should be expected to vary by space and time, and can better be explained within specific social, cultural and economic conditions. This inequality is illustrated in figure 10 that shows the association between TFR and the percentage of women with secondary or higher education in six major world regions. The variation in TFR for countries with the same level of education is remarkable in figure 9. For example, countries with 50-75 percent of women with secondary or higher education in Latin America and the Caribbean region have TFR ranging between 2-3 children. In contrast, countries in SSA with a similar composition of women with secondary or higher education have TFR that exceeds 3 and gets as high as 5.1.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+empowerment_dhs <- read_xlsx("Empowerment.xlsx")
+
+fertility_determinants <- read_xlsx("fertility_dhs.xlsx") %>% 
+  filter(str_detect(Indicator, c("Total", "secondary")) & str_detect(`Characteristic Label`, "Total")) %>% 
+  select(-`Characteristic Category`) %>% 
+  mutate(`Characteristic Label` = recode(`Characteristic Label`, "Total" = "Total 15-49")) %>% 
+  pivot_wider(names_from = `Indicator`, values_from = "Value") %>% 
+  group_by(`Country Name`) %>% 
+  filter(`Survey Year` == max(`Survey Year`, na.rm = TRUE)) %>% 
+  left_join(country_region, by = c("Country Name" = "Region")) %>% 
+  left_join(empowerment_dhs, by = "Country Name") 
+
+
+education <- 
+  ggplot(fertility_determinants %>%  filter(!is.na(Region_SDG) & Region_SDG != "EUNA" & Region_SDG != "OCEANIA"), aes(x = `Women with secondary or higher education`, y = `Total fertility rate 15-49`)) +
+  geom_point(aes(color = Region_SDG)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_bw() +
+    scale_colour_manual(values = cbbPalette) +
+  labs(title = "Figure 9: TFR and women education in recent years, 2015s in various regions")
+
+  
+  ggsave(education, file = "Figure9.png") 
+
+education
+```
+
+
+### III.2.2. Empowerment and fertility level and intention
+
+Women participation in decision making regarding own health, major household purchase and freedom of mobility are  widely used as a proxy measure of women’s empowerment. In fertility analysis, researchers have attempted to understand the relationship between these measures and various indicators of fertility including fertility intentions, birth intervals, use of modern contraceptives methods and actual childbearing practices. The underlining motivation hinges on the assumption that women who participate in household decision making are equally more likely to have a say in the regulation of their childbearing preferences and behavior. @upadhyayWomenEmpowermentFertility2014 provide a detailed literature review of 60 studies on fertility and women empowerment conducted between 1990 and 2012 in low- and middle-income countries. The authors observed a positive association between women empowerment and lower birth rates, longer birth intervals and minimal rates of unplanned pregnancies. Nevertheless, the authors also noted significant discrepancies in the measure of women empowerment construct and variation in the strength of association in the different study population. A parallel trend was observed recently by @prataWOMENEMPOWERMENTFAMILY2017 in a similar systematic literature review, spanning the same period but focusing on women’s empowerment and family planning. The authors noted a positive association between some measure of empowerment and selected family planning outcomes in certain studies, while the null relationship was observed in some cases. They consequently concluded that the relationship between women’s empowerment and fertility is complex, heavily dependent on the domain of women empowerment measure used and the sub-population under consideration. We further illustrate the later observation in figure 11  that presents the correlation between total fertility and the percent of women participating in across three domains of decision making (on own health, major household purchase and a visit to family members or relatives. In general, we see that lower fertility is associated with higher levels of participation in decision making. However, this obscure potential null relationship in CESA, Latin America and the Caribbean and even a negative correlation in EASA. In SSA, the relationship is not clear at least when the level of participation in decision making is less than 50 percent.
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+empowerment <- 
+  ggplot(fertility_determinants %>%  filter(!is.na(Region_SDG) & Region_SDG != "EUNA" & Region_SDG != "OCEANIA"), aes(x = `Value`, y = `Total fertility rate 15-49`)) +
+  geom_point(aes(color = Region_SDG)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_bw() +
+  labs(x = "Final say in all of the decisions", title = "Figure 10: Relationship between TFR and women empowerment ") +
+  scale_colour_manual(values = cbbPalette) +
+  theme_bw() 
+  
+ggsave(empowerment, file = "Figure10.png")
+
+empowerment
+
+```
+
+
+# Conclusion
+
+We have not revisited the Malthusian theory of the imbalance between population and resources in the context of this article. Nor have we revisited the major conferences on the world’s population, from 1974 in Bucharest to that of 1998 in Cairo. This shows how the question of overpopulation is no longer a fundamental question of the progress of humanity. Today, it concerns only one large region of the world, sub-Saharan Africa, whose population will reach 2 billion in 2050. In the other regions of the world, the challenge is to a recovery in fertility which has reaches extremely low levels. Thus, on each side of the hemisphere, population issues are no longer the same as was the case in the middle of the past century.
+
+In sub-Saharan Africa, the vitality of fertility poses major challenges for investment in social services, which are fundamental to further reducing this fertility. The first signs of a decline in precursor countries such as Ghana, Kenya and Zimbabwe have given way to fertility, which is declining at a very slow rate, despite investments in the family planning sectors. For some authors, the fall in educational investments in the 1980s explains the slowdown in fertility as we see it today [@goujonEducationStallsSubsequent2015]. The pattern of a resumption of fertility or stagnation following the crisis is not new. @tabutinDemographySubSaharanAfrica2004 in their description of the demographic situation in Africa from the 1950s to 2000 had already revealed this explanatory schema. Despite the alarming situations in certain countries of sub-Saharan Africa, others have shown incredible successes which makes it believe that the control of fertility is still possible with vigorous family planning policies coupled with political stability and a supportive environment for women to realize their fertility desires [@westoffRecentFertilityTransition2013; @olaolorunADVANCINGFAMILYPLANNING2010]. This control of fertility is important if sub-Saharan Africa wants to have the same chances of success as the countries of Asia. The demographic dividend, the influence of the change in the structure of the population induced by a decline in fertility on economic development, goes through this. As it stands, much remains to be done, and family planning policies need to be scaled up.
+
+In Europe and North America, the decline in fertility was more pronounced than predicted by the theory of demographic transition [@vallinFinTransitionDemographique2000]. In all the countries of this region of the world, fertility is below 2 children per woman, which public policies have failed to redress. it is estimated that several countries will observe a drop in their population size, For example, the current population of Europe will  decline by 37.1 million, reaching 0.7 billion by 2050. Italy with 60.5 million people in 2020, will only reach 54.4 million people in 2050. Hungary will see its population decrease  from 9.5  to 8.5 million. It is a change in economic or social paradigm which must be called upon to improve fertility in rich countries. It should be noted that not all rich countries live the same realities. Fertility is higher in northern Europe than in the south that can be explained by a gender structure at institutional level that match the gender structure at the individual level. According to  @mcdonaldSustainingFertilityPublic2002, the differentials in fertility could be explained by a dichotomy between institutions that concern people as individuals (education, employment...) and those that consider the individual as a member of a family (family services, social security taxation...). The more society adheres to a traditional family system, the higher the degree of divergence between social institutions, and the lower the fertility [@mcdonaldSustainingFertilityPublic2002]. In the meantime, these changes are not without consequences for these countries. In addition to an ageing population, there will be an increasingly expensive need for healthcare services, a need for international immigration with its share of tensions between populations, and the rise of the populist right in several countries.
+
+Between these two patterns lies the vast majority of fertility situations in the world, which includes the countries of Latin America, North Africa and the Middle East, South and East Asia (which have joined a lot of countries where fertility is very low).
+
+Important questions remain about the future of fertility around the world. How these very low fertility levels influence the reluctance of certain public policies in sub-Saharan Africa leaves to demonstrate ^[We remember the statement of the Tanzanian president who said that he does not want to end up like Europe in several years and which encouraged greater fertility, https://bit.ly/39CcnL8]. Moreover, even if countries may be fascistic, they should not lose sight of the benefits of a family planning policy in the area of women’s health, their autonomy and above all to enable them to achieve the objectives of fertility they set for themselves. On one side of the Mediterranean, in Southern Europe, the economic crisis induces a significant decline in fertility while in the South of the Mediterranean, the crisis does not have the same consequences on fertility. In Asian countries, there are still pockets of strong demographic growth. 
+
+
+<!--
+Nous n'avons pas revisité la théorie malthusienne sur le déséquilibre entre la population et les ressources dans le cadre de cet article. Nous n'avons pas non plus revisité les grandes conférences sur la population dans le monde, de 1974 à Bucarest à celle de 1998 au Caire. C'est dire à quel point la question de la surpopulation n'est plus une question fondamentale de la marche de l'humanité. Elle ne concerne aujourd'hui qu'une seule grande région du monde, l'Afrique sub-Saharienne, dont la population atteindra ... en 2050. Dans les autres régions du monde, le défi est à un redressement de la fécondité qui a atteint des niveaux extrêmement bas. Ainsi, de chaque part de l'hémisphère, les questions de population ne sont plus les mêmes comme cela a été le cas au milieu du siècle passé. 
+
+En Afrique sub-Saharienne, la vitalité de la fécondité pose des défis majeurs pour les investissements dans les services sociaux qui sont fondamentaux pour fléchir ultérieurement cette fécondité. Les premiers frémissements de la baisse dans les pays précurseurs comme le Ghana, le Kenya ou la Zimbabwe, ont laissé place à une fécondité qui baisse à un rythme très faible, malgré les investissements dans les secteurs de la planification familiale. Pour certains auteurs, la chute dans les investissements éducatifs dans les années 1980 permettent d'expliquer le ralentissement de la fécondité tel qu'on le voit aujourd'hui (Lutz). Le schéma d'une reprise de la fécondité ou d'une stagnation suite à la crise n'est pas nouveau. Tabutin et Schoumaker dans leur description de la situation démographique en Afrique des années 1950 à 2000 avaient déjà révélé ce shcéma explicatif. Malgré les situations alarmantes dans certains pays d'Afrique sub-Saharienne, d'autres ont montré des succès incroyables qui font croire que la maîtrise de la fécondité est encore possible avec des politiques vigoureuses de planifications familiales couplées à une stabilité politique et un environnement d'emploi égalitaire pour les femmes (Westoff sur le Rwanda). Cette maîtrise de la fécondité est importante si l'Afrique sub-Saharienne veut avoir les mêmes chances de succès que les pays d'Asie. La dividende démographique, l'influence du changement de structure de la population induite par une baisse de fécondité sur le développement économique, passe par là. En l'état actuel, il reste beaucoup à faire, et les politiques en matière de planification familiale doivent redoubler d'ampleurs. 
+
+En Europe et en Amérique du Nord, la baisse de la fécondité a été plus prononcée que ce que prédisait la théorie de la transition démographique (Vallin). Dans l'ensemble des pays de cette région du monde, la fécondité est en dessous de 2 enfants par femme, que les politiques publiques n'arrivent pas à faire redresser. En 2050, il est estimé que la population de l'Europe et de l'Amérique du Nord atteindra ... avec plusieurs pays qui vont voir la taille de leur population chuter. L'Italie avec ... en 2020, n'atteindra que ... en 2050. la Hongrie verra quant à elle, sa population passée de ... à ... C'est d'un changement de paradigme économique ou social dont il faut faire appel pour redresser la fécondité dans les pays riches. Il est à remarquer que tous les pays riches ne vivent pas les mêmes réalités. La fécondité est plus élevée en Europe du Nord qu'au Sud. En constatant malgré tout une fécondité plus vigoureuse dans les pays d'Europe du Nord, McDonald . En attendant, ces changements ne sont pas sans conséquences pour ces pays. A un vieillissement de la population va s'ajouter un besoin de service de soins de plus en plus couteux, un besoin pour l'immigration internationale avec son lot de tensions entre les populations, et la montée de la droite populiste dans plusieurs pays.  
+
+Entre ces deux schémas se situe la grande majorité des situations de fécondité dans le monde qui regroupe les pays d'Amérique Latine, de l'Afrique du Nord et du Moyen Orient, de l'Asie du Sud et de l'Est (qui ont rejoint le lot des pays où la fécondité est très faible). 
+
+Il demeure des questions importantes sur le futur de la fécondité dans le monde. De quelle manière ces niveaux de fécondité très bas influencent les réticences de certaines poliques publiques en Afrique sub-Saharienne laissent à démontrer^[On se souvient de la déclaration du président Tanzanien qui estimait qu'il ne veule pas se retrouver comme l'Europe dans plusieurs années et qui encourageait une plus grande fécondité, https://bit.ly/39CcnL8]. Au demeurant, même si les pays peuvent être lascistes, ils ne devraient pas perdre de vue les bienfaits d'une politique de planification familiale dans le domaine de la santé des femmes, de leur autonomie et surtout pour leur permettre d'atteindre les objectifs de fécondité qu'elles se fixent. D'un côté de la méditérannée, en Europe du Sud, la crise économique induit une fléchissement important de la fécondité alors qu'au sud de la méditérrannée, la crise n'a pas les mêmes conséquences sur la fécondité. Dans les pays d'Asie, il demeure encore des poches de fortes croissances démographiques. Les questions climatiques avec les refugiés climatiques montrent à suffisance qu'on est loin d'avoir achevé la transition démographique et assuré le bien-être à l'ensemble de l'humanité. -->
+
+\newpage
+
+# References
+
+
+

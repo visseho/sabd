@@ -1,0 +1,1667 @@
+---
+title: "Séance 1: Analyse et exploration des données"
+author: "Visseho Adjiwanou, PhD."
+institute: "Université du Québec à Montréal"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  slidy_presentation: default
+  beamer_presentation:
+    colortheme: beaver
+    fonttheme: structurebold
+    theme: Antibes
+  ioslides_presentation: default
+header-includes:
+  - \usepackage{color}
+---
+
+
+## Plan de présentation
+
+1. Les statistiques et les variables
+2. Manipulation des bases de données 
+3. Transformation des données
+4. Exploration des données
+5. Analyse des données
+6. Visualisation
+7. Traitement des problèmes
+  - Données manquantes
+  - Aller au-delà de l'association statistique
+
+
+## Introduction
+
+"L'analyse statistique commence avec vous et finit avec vous, jamais avec l'outil statistique".
+
+
+1. les statistiques et les variables
+=========================================
+
+## Statistiques
+
+1. Statistiques en tant que nombre
+
+> - Le revenu moyen des habitants de Wakanda est de 1200w
+ 
+> - La température à Montréal aujourd'hui est de 15 dégrés Celcuis
+ 
+> 2. Statistiques en tant que méthodes de calcul
+
+>  - Les statistiques sont des méthodes résumant quantitativement et généralisant des informations
+
+## Données
+
+1. $\color{red}{\text{Données}}$: Information non résumée, brute que les statistiques rendent plus aisément manipulables.
+
+  - Différentes types:
+    - Images
+    - Vidéo
+    - Textes
+    - Chiffres ...
+
+> 2. $\color{red}{\text{Banque de données}}$ : Organisation systématique des données  
+
+> 3. $\color{red}{\text{Fichiers de données}}$ : Quand les banques de données peuvent être lues par les ordinateurs
+
+> 4. $\color{red}{\text{Unités d'analyse}}$ : est la personne, l'objet ou l'événement que le chercheur étudie.
+
+  
+## Survol des statistiques
+
+Deux branches des statistiques:
+
+1. $\color{red}{\text{Statistiques descriptives}}$ : méthodes résumant l'information afin de la rendre plus intelligible, plus utile ou plus aisément communicable. 
+
+    - Exemple: Age moyen des étudiants de ma classe.
+
+  - Cependant, il y a perte d'information.
+
+>  - Choix judicieux du type de statistiques à utiliser 
+
+## Survol des statistiques
+  
+> 2. $\color{red}{\text{Statistiques inférentielles}}$  renvoient aux procédures par lesquelles nous généralisons l'information concernant un échantillon à la population de laquelle fut tiré l'echantillon en question.
+
+>  - Marge d'erreur; p value ou p <0,05; test de chi-carré, chi 2 ...
+
+> 3. Le cours concerne à la fois les statistiques descriptives et les statistiques inférentielles
+
+## Les échantillons et les populations
+
+1. $\color{red}{\text{Données de population}}$ : proviennent de tous les cas auxquels un chercheur veut appliquer ses conclusions: on dit dans ce cas qu'on fait un **recensement** de la population.
+
+  - Données parfois introuvables
+  - Onéreuses
+  - Longues à collecter
+  
+> 2. $\color{red}{\text{Données d'échantillon}}$ : provient d'une partie de la population.
+
+> 3. $\color{red}{\text{Paramètre}}$ : résumé basé sur une population
+
+> 4. $\color{red}{\text{Statistique}}$ : caractéristique d'un échantillon
+
+>  - Exemple : âge moyen (paramètre si calculé sur toute la population et statistique si calculé à partir d'un échantillon)
+
+
+## Définitions conceptuelles des variables
+
+- Une grande partie de l'analyse statistique consiste à 
+
+  1. décrire comment les cas sont distribués, 
+  2. décrire comment les variables interagissent et 
+  3. faire des prédictions.
+
+- Pour la plupart, il existe très peu de constantes dans les sciences, et vraiment aucune constante n'existe dans les sciences sociales. 
+
+- Selon le fil Twitter de l'astrophysicien Neil DeGrasse Tyson (5 février 2016):
+
+"En science, lorsque le comportement humain entre dans l'équation, les choses deviennent non linéaires. C'est pourquoi la physique est facile et la sociologie est difficile." 
+
+## Définitions conceptuelles des variables
+
+- Tout varie d'un cas à l'autre. 
+
+- À mesure que nous passons d'une personne à l'autre, le sexe, l'âge, la couleur des cheveux, l'éducation et les préférences alimentaires varient. 
+
+- Cela est vrai lorsque nous comparons des individus, et c'est vrai lorsque nous comparons des familles, des communautés, des cultures et toute autre unité d'analyse. 
+
+- Deux façons de penser les variables sont 
+
+    - les choses qui varient d'un cas à l'autre et 
+    - le regroupement logique des attributs.
+
+## Les variables 
+
+- Une $\color{red}{\text{variable}}$ est une caracteristique ou une propriété quelconque dont la valeur diffère d'un cas à l'autre.
+
+- Elles se retrouvent souvent en colonnes dans les fichiers de données
+- $\color{red}{\text{Echelle}}$ : série des valeurs possibles d'une variable.
+- $\color{red}{\text{Scores}}$ : valeur possible d'une variable
+
+## Unité d'analyse / attributs
+
+- Unité d'analyse: C'est celui ou la chose qui est étudié.
+
+- Les attributs sont définis comme un ensemble de caractéristiques logiques pour une variable
+  - Exemple: Les attributs homme et femme constituent la variable sexe.
+  
+## Variable en sciences sociales
+
+- Les variables peuvent mesurer :
+
+    - des **attributs physiques** : âge, sexe, résultat scolaire
+    - des **idées**: haine. On peut voir des exemples de haines, mais il est difficile de mettre la haine dans une échelle de mesure et la mesurer.
+
+- **On doit toujours définir le concept avant de le mesurer, et seulement après décrire ces caractéristiques statistiques**
+
+- Exemple: Dans l'analyse de Durkheim sur le suicide, l'unité d'analyse est la société. 
+
+## Variables indépendantes et variables dépendantes
+
+>- l'idée derrière l'association statistique est la covariation, où l'idée que les changements dans une variable sont accompagnés par les changements dans une autre variable.
+
+>- l'une est appelée la variable dépendante (celle qu'on veut expliquer)
+
+>- l'autre est la variable indépendante (celle qui explique l'autre)
+
+>- Exemple: On peut dire qu'un changement dans le niveau d'éducation est associé à un changement dans le niveau de revenu.
+
+  > - Quelle est la variable dépendante?
+  > - Laquelle est la variable indépendante?
+
+## Conceptualisation et opérationnalisation
+
+- En pensant aux concepts et aux variables, il est utile de penser chronologiquement. 
+
+>- Définir ce que nous entendons par une idée doit précéder la conception des moyens de mesurer notre idée. 
+
+>- Décrire ou définir une idée qui, selon nous, représente quelque chose dans le monde réel est un processus appelé **conceptualisation**. 
+
+>- Concevoir des moyens de mesurer les idées que nous avons conceptualisées s’appelle **opérationnalisation**.
+
+## Conceptualisation et opérationnalisation
+
+
+1.	      Conceptualisation
+
+ 	Idée =======================> Définition
+
+
+2.	          Opérationnalisation
+
+ 	Définition ====================> Mesures 
+
+
+## Conceptualisation et opérationnalisation
+
+- Exemple: Aliénation (chez Marx)
+
+   > - Conceptualisation (définition): condition dans laquelle les gens souffrent d’une «déconnexion» entre eux-mêmes et de leur travail et d’une déconnexion les uns des autres
+
+   > - Opérationalisation (mesures): Seriez-vous prêt à accepter une réduction de salaire pour avoir un emploi qui vous plaît plus que votre emploi actuel? - Oui - Non
+
+   > - Nous pourrions affirmer que ceux qui répondent «non» connaissent des niveaux d’aliénation plus importants de leur travail que ceux qui répondent «oui»
+
+    
+## Catégories mutuelllement exclusives et collectivement exhaustives
+
+Les valeurs des variables que vous définissez doivent être :
+
+  >- **Mutuellement exclusives** : pas de chevauchement
+
+  >- **Collectivement exhaustives** : comprend l'ensemble des catégories
+
+
+## Catégories mutuelllement exclusives et collectivement exhaustives
+  
+- Exemple : groupe d'âges
+    - Enfants: Age <=15
+    - Adolescents: Age >15 & Age < 18
+    - Adultes: Age > 18 & Age < 65
+    - Séniors : Age >= 65
+
+Est-ce que le critère est respecté?
+
+Remarque: Quand vous créez de nouvelles variables, vous devez toujours tenir compte de cela.
+
+
+## Les niveaux de mesures
+
+Quatre catégories de variables selon la façon dont elles sont mesurées:
+
+1. $\color{red}{\text{Variables nominales}}$ : se mesure de telle façon que ses valeurs ou ses attributs diffèrent les uns des autres. Les valeurs ne peuvent pas être disposées selon un ordre logique ou naturel. 
+  - Variable nominale dichotomique: prend deux valeurs. ex, sexe
+  - Variable nominale non dichotomique: ex. religion
+
+## Les niveaux de mesures
+
+2. $\color{red}{\text{Variable ordinale}}$ : variables dont les valeurs peuvent être ordonnées.
+
+  - Classe sociale
+  - Quintile de revenu
+
+Remarques: 
+
+  - Variable nominale + variable ordinale = $\color{red}{\text{variable qualitative}}$, ou $\color{red}{\text{catégorielle}}$, ou $\color{red}{\text{factorielle}}$ ou simplement des $\color{red}{\text{facteurs}}$
+  - Variables ordinales plus informatives que les variables nominales (pourquoi?)
+  
+## Les niveaux de mesures
+
+<!--Quatre catégories de variables selon la façon dont elles sont mésurées:-->
+
+3. $\color{red}{\text{Variable d'intervalle}}$ a non seulement des valeurs qui peuvent être ordonnées, mais elle se mesure également à l'aune d'une unité de mesure fixe ou standard.
+- Température
+
+## Les niveaux de mesures
+
+4. $\color{red}{\text{Variable de ratio}}$ : est semblable à une variable d'intervalle. Mais, en plus, elle a un zéro non arbitraire. 
+
+
+## Les niveaux de mesures
+
+Remarques:
+
+  - Variable de ratio car permettent de calculer des ratios
+  - Variable d'intervalle + variable de ratio = $\color{red}{\text{variable quantitative}}$
+  - Peuvent être $\color{red}{\text{continue}}$ quand elles peuvent prendre une infinité de valeurs ou $\color{red}{\text{discret}}$ quand elles prennent un nombre fini de valeurs. 
+      - Age (discret)
+      - Taille (continue)
+
+
+## Résumé
+<!--
+https://www.graphpad.com/support/faq/what-is-the-difference-between-ordinal-interval-and-ratio-variables-why-should-i-care/
+-->
+
+![](../Images/resume_variable1.png){width='80%'}
+
+
+
+## Résumé
+
+![](../Images/resume_variable2.png){width='80%'}
+
+## Les niveaux de mesures
+
+>- Il est capital de distinguer le type de variable que vous utilisez pour être en mesure d'utiliser la bonne statistique.
+
+>- On vera l'application dans R.
+
+>- Tout exercice de collecte de données (en sciences naturelles ou sociales) risque d'introduire des erreurs dans les données collectées
+
+>- Peut avoir de sérieuses implications pour les inférences faites ou les conclusions tirées ("validité")
+
+  > - Besoin de s'assurer que les données ne sont pas compromises par une erreur
+
+
+## Une classification des erreurs
+
+Des erreurs peuvent provenir de :
+
+> 1. mesure (c'est-à-dire comment les données ont été recueillies)
+
+> - "erreur de mesure" ou parce que 
+
+> 2. le choix des objets sélectionnés pour la mesure ne reflète pas fidèlement l'univers de ces objets
+
+> - "erreur d'échantillonnage"
+
+> - Une matrice d'erreurs 2x2
+
+
+## Une classification des erreurs
+
+                   Erreur aléatoire      Erreur systématique  Conséq
+------------------ --------------------- -------------------- -------------
+Erreur de mesure   (Manque) de fiabilité Biais de mesure      Validité 
+                                         (de déclaration)     de construit
+                                         Biais de sélection
+Erreur             Erreur statistique                         Validité 
+d'échantillonnage                                             externe
+**Conséquences**   Précision             Exactitude           Validité 
+                   (Precision)           (Accuracy)           totale
+
+
+## Validité / fiabilité (reliability)
+
+- $\color{red}{\text{Validité}}$ : Le degré auquel une variable mesure ce que nous pensons qu'elle mesure. Est-ce que la variable reflète le concept ?
+
+>- $\color{red}{\text{Fiabilité}}$: Le degré auquel une variable donne des résultats cohérents. D'autres chercheurs doivent être en mesure d'effectuer exactement la même expérience dans les mêmes conditions en obtenant les mêmes résultats. 
+
+## Validité / fiabilité
+
+- Exemple : Supposons que nous voulons mesurer la position sociale d'un groupe d'étudiants. Quelles questions pouvons nous poser pour la mesurer?
+
+> - Lorsque vous essayez de mesurer des concepts difficiles comme le statut social, il est souvent préférable 
+
+  > - d'utiliser une variété de mesures qui peuvent être analysées indépendamment ou 
+  > - combinées en une seule mesure globale (ou composite). 
+
+> - Par exemple, de nombreux sociologues utilisent une combinaison de revenu, d'éducation et de profession pour déterminer le statut socioéconomique global du répondant. 
+
+## Validité / fiabilité
+
+- Il est important de se rappeler que les mesures peuvent être valables/valides sans être fiables, de même, les mesures peuvent être fiables sans être valides. 
+
+- Le but est de viser des niveaux élevés de validité et de fiabilité pour éviter le problème du **"garbage in, garbage out"**.
+
+
+## Validité / fiabilité
+
+- Exemple : Supposons que nous voulons mesurer la position sociale d'un groupe d'étudiants. Quelles questions pouvons nous poser pour la mesurer?
+
+> - Quel est ton revenu l'année passée?
+
+> - Quel est ton revenu la semaine passée? 
+
+> - Les questions ne sont pas valides: Qu'en est-il des revenus des parents
+
+
+## Validité / fiabilité
+
+- Exemple : Supposons que nous voulons mesurer la position sociale d'un groupe d'étudiants. Quelles questions pouvons nous poser pour la mesurer?
+
+> - Diras-tu que tu fais partie de la classe ouvrière, classe moyenne, ou de la classe supérieure?
+
+> - Majorité vont dire classe moyenne
+ 
+> - Es-tu financièrement en sécurité? très subjective donc pas fiable
+
+
+## Les données individuelles et les données agrégées
+
+- Dans la plupart des cas, nous travaillons avec des données individuelles.
+- Dans certains cas, nos données sont agrégées (PIB par pays par exemple)
+
+> - Données écologiques si l'unité d'agrégation est l'espace
+
+> - Donnent lieu à des $\color{red}{\text{erreurs écologiques}}$: inférer sur les individus les résultats agrégés
+
+> - $\color{red}{\text{Erreurs individualistes ou atomistes}}$: attribuer les caractéristiques d'un individu à son groupe ethnique ou social
+
+## Erreurs écologiques
+
+- Durkheim constatant que les régions de Prusse les plus peuplées par des protestants étaient celles ou les suicides étaient les plus nombreux établissait un lien entre protestantisme et suicide qui le conduisait à penser que les protestants avaient un plus grand risque de se suicider que les catholiques.
+
+> - En réalité Durkheim pouvait seulement dire : «Un fort pourcentage de protestants dans une population conduit à un plus fort taux de suicides» qui peuvent concerner des catholiques comme des protestants.
+
+## Erreurs écologiques
+
+> - Les informations populationnelles recueillies par Durkheim conduisaient à un rapport du taux de suicide chez les protestants sur le taux de suicide des catholiques de 7.6, mais calculé sur les données individuelles ce rapport tombait à 2. L’écart entre 2 et 7.6 donne la mesure de l’erreur écologique.
+
+> - Autre exemples: https://fr.wikipedia.org/wiki/Erreur_%C3%A9cologique
+
+
+2. Manipuler les données
+====================================
+
+## Introduction
+
+![](../Images/r4ds.jpg)
+
+
+## Manipulation des données
+
+1. Fusionner plusieurs bases de données
+2. Transformer de format (long en large et vice versa)
+3. Données agrégées
+
+
+
+3. Transformer les données avec Tidyverse
+============================================
+
+## Processus d'analyse des données
+
+
+- Tidyverse comprend un ensemble de packages qui suivent la même philosophie dont le but est de vous aider à répondre à chaque étape de votre processus d'analyse des données. 
+
+## Processus d'analyse des données
+
+- Résumons ce processus:
+
+>- 1. Où sont les données? Vous devez les importer (**read**) pour les analyser. La manière dont vous allez les importer dépend du type de fichier.
+>- 2. Est-ce que vous avez besoin de l'ensemble des variables du fichier de données? pas nécessairement. Vous devez sélectionner (**select**) celles qui vous intéresse
+>- 3. Est-ce que vous travaillez sur l'ensemble de l'échantillon ou uniquement sur les femmes? Vous devez les filtrer (**filter**)
+
+## Processus d'analyse des données
+
+- Résumons ce processus:
+
+>- 4. Devez-vous utiliser les groupes d'âges ou les âges réels? Vous devez créer de nouvelles variables (**mutate**)
+>- 5. Que faites-vous des individus qui n'ont pas répondu à certaines questions? leur attribuer une valeur (**impute**) ou les enlever (**na.rm pour remove na**)
+>- 6. Que savons-nous sur les variables? Vous devez produire des statistiques descriptives (**summarize**)
+
+
+## Processus d'analyse des données  
+
+- Les gras dans le diapositif précédent indique le langage que le logiciel comprend pour faire les étapes décrites plus haut
+- Il ne comprend que l'Anglais. Chaque fois que vous voulez faire quelque chose, chercher le mot en anglais
+- Il respecte une certaine manière de **parler**. Il va utiliser des symboles pour se simplifier la vie comme celui-ci par exemple **%>%**
+
+## Packages de Tidyverse
+
+```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+
+```
+
+
+## Processus d'analyse des données
+
+- Comme dit plus haut, Tidyverse va nous servir à faire tout ce travail.
+- Comme toujours, imitez au maximum ce que je fais
+
+![](../Images/r4ds.jpg)
+
+
+
+## Processus d'analyse des données
+
+Chaque élément est associé à un `package` donné.
+
+1. Importer                                       (**readr**)
+
+2. Transformation des données (data wrangling)
+
+ - Arranger                                        (**tidyr**) 
+ 
+ - Transformer                                     (**dplyr**)
+
+3. Analyse des donnés
+ 
+ - Visualisation                                   (**ggplot2**)
+ - Modélisation
+
+4. Communication                                      (**rmarkdown**: ceci n'est pas un package de tidyverse)
+
+
+## Processus d'analyse des données
+
+PS. Intéressant sur data wrangling
+https://www.lemagit.fr/conseil/Quest-ce-que-le-Data-Wrangling
+
+## Processus d'analyse des données
+
+- Les autres packages de tidyverse
+    - **sringr** : pour travailler avec les données caractères
+    - **forcat** : pour travailler avec les facteurs : http://perso.ens-lyon.fr/lise.vaudor/manipulation-de-facteurs-avec-forcats/
+    - **purrr** : pour travailler avec les fonctions
+    - **tibble** : transformer les données en tibble.
+  
+La documentation est éparse sur chacun de ces packages.
+
+
+## 1. Sélection des variables
+
+Voir Séance 2.2 
+
+## 2. Sélection des observations
+
+Séance 2.2
+
+
+## 3. Créations de nouvelles variables
+
+- Variables quantitatives
+
+- Variables factorielles
+
+Séance 2.2
+
+
+4. Exploration des données
+===================================
+
+## 1. Variables factorielles
+
+- Tableau de fréquences
+
+
+## 2. Variables quantitatives
+
+- Paramètres de tendances centrales
+- Paramètres de dispersion
+
+
+## 3. Relations entre deux variables 
+
+
+
+5. Analyse des données
+=======================================================
+
+## Plan de présentation
+
+- Exemples graphiques
+  - Exemple 1: accès aux médias et attitude face à la violence
+  - Exemple 2: Relation entre taille et poids
+- Discuter de la meilleure manière d'estimer cette relation
+- Présenter le modèle linéaire simple avec ces interprétations
+
+
+## Exemple 1: Ouverture aux médias et attitude face à la violence
+
+Présenter à nouveau la discussion sur la relation entre violence conjugale et l'accès à l'information mesurée par les variables `sec_school` et `no_media`. ouverture aux médias éducation et radio
+
+## Exemple
+
+Nom             Description
+---------------  --------------------------------------------------------------
+`beat_goesout`   Pourcentage de femmes dans chaque pays qui pensent qu'un mari
+                  a le droit de battre sa femme si elle sort sans le lui dire.
+`beat_burnfood`  Pourcentage de femmes dans chaque pays qui pensent qu'un mari 
+                  a le droit de battre sa femme si elle brûle sa nourriture.  
+`no_media`       Pourcentage de femmes dans chaque pays qui ont rarement accès
+                 à un journal, une radio ou une télévision.
+`sec_school`     Pourcentage de femmes dans chaque pays ayant un niveau
+                  d'éducation secondaire ou supérieur.
+`year`           Année de l'enquête
+`region`         Région du monde
+`country`        pays
+---------------  --------------------------------------------------------------
+
+## Dressons la table
+
+```{r}
+
+rm(list = ls())
+
+library(tidyverse)
+dhs_ipv <- read_csv("../Données/dhs_ipv.csv")
+
+```
+
+## Quelques informations sur les données
+
+```{r}
+
+head(dhs_ipv)
+
+```
+
+## Quelques informations sur les données
+
+```{r}
+
+glimpse(dhs_ipv)
+
+```
+
+## Quelques informations sur les données
+
+```{r, size="small"}
+
+summary(dhs_ipv)
+
+```
+
+## Association entre beat_burnfood et niveau d'éducation
+
+```{r, warning=FALSE, message=FALSE, out.height='80%', out.width='60%'}
+
+ggplot(dhs_ipv) +
+  geom_point(aes(x = sec_school, y = beat_burnfood), color = "blue") +
+  geom_text(aes(x = sec_school, y = beat_burnfood, label = country), size = 2)
+
+```
+
+
+## Association entre beat-burnfood et niveau d'éducation
+
+```{r, warning=FALSE, message=FALSE, out.height='80%', out.width='60%'}
+
+ggplot(dhs_ipv) +
+  geom_point(aes(x = sec_school, y = beat_burnfood)) +
+  geom_abline(aes(intercept = 38, slope = -2), color = "red")
+
+```
+
+- Est-ce que c'est la meilleure droite qui indique la relation entre `beat_burnfood` et `sec_school`?
+- Pourquoi pas?
+
+
+## Association entre beat-burnfood et niveau d'éducation
+
+
+```{r, warning=FALSE, message=FALSE, out.height='80%', out.width='60%'}
+
+ggplot(dhs_ipv) +
+  geom_point(aes(x = sec_school, y = beat_burnfood)) +
+  geom_abline(aes(intercept = 38, slope = -2), color = "red") +
+  geom_abline(aes(intercept = 35, slope = -1.5), color = "green") 
+
+
+```
+
+- Est-ce plus tôt celle-ci? Pourquoi?
+
+
+## Association entre beat-burnfood et niveau d'éducation
+
+- Maintenant, simulons un ensemble de droites pour voir si la meilleure candidate figure parmi elles.
+- Pour ce faire, je crée 150 intersections (intercept) et 150 pentes (slopes), selon une loi uniforme.
+- On parle de loi uniforme quand tous les éléments ont les mêmes probabilités d'être choisis.
+(Dire qu'une variable aléatoire X suit une loi uniforme sur l'intervalle [a, b]) signifie que sa densité f est la fonction constante égale à 1/(b-a).
+
+## Association entre beat-burnfood et niveau d'éducation
+
+```{r, warning=FALSE, message=FALSE, out.height='80%', out.width='60%'}
+
+#library(modelr)
+
+set.seed(2001)
+models <- tibble(
+  a = runif(150, -20, 40),
+  b = runif(150, -5, 5)
+)
+models
+```
+
+## Voyons les distributions de a
+
+
+```{r, warning=FALSE, message=FALSE, out.height='80%', out.width='60%'}
+
+ggplot(models, aes(x = a, y = ..density..)) +
+  geom_histogram()
+
+```
+
+## Voyons les distributions de b
+
+
+```{r, warning=FALSE, message=FALSE, out.height='80%', out.width='60%'}
+
+ggplot(models, aes(x = b, y = ..density..)) +
+  geom_histogram()
+
+```
+
+
+## Association entre beat-burnfood et niveau d'éducation
+
+```{r, warning=FALSE, message=FALSE, out.height='80%', out.width='60%'}
+
+ggplot(dhs_ipv) +
+  geom_point(aes(x = sec_school, y = beat_burnfood)) +
+  geom_abline(data = models, aes(intercept = a, slope = b), alpha = 1/4)
+
+```
+
+## Association entre beat-burnfood et niveau d'éducation
+
+```{r, warning=FALSE, message=FALSE, out.height='80%', out.width='60%'}
+
+ggplot(dhs_ipv) +
+  geom_point(aes(x = sec_school, y = beat_burnfood)) +
+  geom_abline(data = models, aes(intercept = a, slope = b, color = b), alpha = 1/4)
+  
+
+```
+
+## Association entre beat-burnfood et niveau d'éducation
+
+```{r, warning=FALSE, message=FALSE, out.height='80%', out.width='60%'}
+
+ggplot(dhs_ipv) +
+  geom_point(aes(x = sec_school, y = beat_burnfood)) +
+  geom_abline(data = models %>% filter(b < 0), aes(intercept = a, slope = b), alpha = 1/4) +
+  geom_abline(aes(intercept = 38, slope = -2), color = "red") +
+  geom_abline(aes(intercept = 35, slope = -1.5), color = "green")
+
+```
+
+## Association entre beat-burnfood et niveau d'éducation
+
+```{r, warning=FALSE, message=FALSE, warning = FALSE}
+
+graph1 <- ggplot(dhs_ipv) +
+  geom_point(aes(x = sec_school, y = beat_burnfood)) +
+  geom_abline(data = models %>% filter( b <0 ), aes(intercept = a, slope = b), alpha = 1/4) +
+  geom_abline(aes(intercept = 38, slope = -2), color = "red") +
+  geom_abline(aes(intercept = 35, slope = -1.5), color = "green") +
+  geom_smooth(aes(x = sec_school, y = beat_burnfood), method = "lm", se = FALSE, size = .5)
+
+```
+
+
+## Association entre beat-burnfood et niveau d'éducation
+
+
+```{r, warning=FALSE, message=FALSE, warning = FALSE}
+
+graph1
+
+```
+
+## Sur quoi nous basons-nous ou devons-nous nous baser pour choisir cette droite?
+
+
+## Régression linéaire simple
+
+## Définition
+
+- Le modèle de **régression linéaire simple** peut être utilisé pour étudier la relation entre deux variables, la variable dépendante (Y) et la variable indépendante (X), comme l'exemple dont nous venons de parler.
+- On parle de **régression linéaire multiple** dans le cas où il y a au moins 2 **variables indépendantes**.
+
+## Spécification
+
+- Nous avons {Yi, Xi}, un échantillon de Y et X
+- Nous sommes intéressés à **"expliquer Y en termes de X"** ou à **"étudier comment Y varie avec les changements de X"**
+- Modèle
+
+$$ Y = \alpha + \beta X + \epsilon $$
+ 
+  - Y = variable dépendante | variable à expliquer
+ 
+  - X = variable indépendante | variable explicative | prédicteur
+ 
+  - ($\alpha$, $\beta$) = coefficients à déterminer (on dit à estimer) | paramètres du modèle
+ 
+  - $\epsilon$ = erreurs| termes d'erreur de moyenne nulle (unobserved error / disturbance error )
+
+
+## Interprétation
+
+$$ Y = \alpha + \beta X + \epsilon $$
+ou une formulation alternative:
+
+$$ E(Y|X) = \alpha + \beta X $$
+
+- $\alpha + \beta X$ : moyenne de Y étant donnée la valeur de X 
+- $\alpha$ : la valeur de Y quand X est zéro
+- $\beta$ : augmentation de Y associée à une augmentation d'une unité de X
+
+## D'où vient le epsilon
+
+1. Omission de l'influence d'innombrables événements fortuits
+    - Autres covariables importantes (influences systématiques)
+      Etat nutritionnel de la mère
+    - Autres petites variables non significatives avec une très légère influence irrégulière
+
+2. Erreur de mesure
+    - Dans la variable dépendante
+    - Dans la variable indépendante (plus problématique)
+
+3. Indétermination humaine
+
+    - Le comportement humain est tel que les actions entreprises dans des circonstances identiques différeront de manière aléatoire
+
+## Spécification
+
+```{r rline, echo=FALSE, fig.cap="", out.width = '100%'}
+knitr::include_graphics("../Images/regression_line.png")
+```
+
+- $\beta_{0}$ = intersection à l'origine (intercept)
+- $\beta_{1}$ = pente (slope) 
+
+
+## Méthodes d'estimation
+
+- Il existe de nombreux estimateurs présentant des caractéristiques différentes susceptibles de résoudre l'équation 1. 
+
+- La tâche de l'économètre est de trouver le meilleur **estimateur**. 
+
+- Les deux approches les plus importantes sont:
+
+    1. Méthodes des moindres carrés: dans le cas d'une régression linéaire simple, il s'agit de trouver la meilleure ligne qui décrit de manière appropriée le nuage de points {Yi, Xi}.
+
+    2. Approche du maximum de vraisemblance
+
+<!--
+## Méthodes des moindres carrées ordinaires: Hypothèses
+
+numéro    | Hypothèses            | Formules               | Violations
+----------:-----------------------:------------------------:-------------
+1         |Y est une fonction linéaire  | $$Y = \alpha + \beta X + \epsilon$$ | Mauvais régresseurs
+          |d'un X, plus une perturbation    |        |Non-linéarité
+          |                                 |        |Changer les paramètres
+-->
+
+## Méthodes d'estimation
+
+- Estimer les paramètres du modèle à partir des données {$X_i, Y_i$}
+- ($\hat{\alpha}, \hat{\beta}$) : Coefficients estimés
+- $\hat{Y} = \hat{\alpha} +  \hat{\beta} X$ : Valeur prédite (predicted/fitted value)
+- $\hat{\
+epsilon} = Y - \hat{Y}$ : Résidus (residuals)
+
+## Méthode d'estimation: moindres carrées ordinaires
+
+- Minimiser la somme des carrées des résidus (SSR) : $$ SSR = \sum_{i=1}^n\hat{\epsilon}^2  = \sum_{i=1}^n(Y_i - \hat{\alpha} +  \hat{\beta X_i})^2 $$
+- Solution
+- Coefficients estimés : $$\hat{\alpha} = \bar{Y} -  \hat{\beta} \bar{X}$$
+
+$$\hat{\beta} = \frac{\sum_{i=1}^n(Y_i - \bar{Y})(X_i - \bar{X})}{\sum_{i=1}^n(X_i - \bar{X})^2}$$
+
+- la droite des moindres carrées passe toujours par les points ($\bar{X}, \bar{Y}$)
+- $\hat{Y} = \bar{Y}$
+- la moyenne des résidus est toujours égale à zéro
+
+
+Régression linéaire multiple
+========================================================
+
+
+## Introduction
+
+- La régression linéaire simple ne permet pas de déduire une causalité: la réalité est plus complexe
+- Permet de comprendre le concept de régression
+- En cas de plus d'une variable indépendante, on parle de régression linéaire multiple
+
+## Spécification
+
+$$ Y_i = \alpha + \beta_1 X_{1i} +  \beta_2 X_{2i} + ...+\beta_k X_{ki} +\epsilon_i$$
+Où $\epsilon_i$ suit une loi normale de moyenne 0 et de variance $\sigma^2$. On a k indépendantes variables pour n observations ${(Y_i, X_{11}, X_{12}, ..., X_{1k}), ..., (Y_n, X_{n1}, X_{n2}, ..., X_{nk})}$.
+
+Exemple:
+  - Y peut être le poids à la naissance
+  - X1 l'age de la mère à la naissance de l'enfant
+  - X2 le sexe de l'enfant
+
+## Spécification
+
+$$ Y_i = \alpha + \beta_1 X_{1i} +  \beta_2 X_{2i} + ...+\beta_k X_{ki} +\epsilon_i$$
+
+- Votre tâche: estimer l’effet de chaque variable X spécifique sur Y, en contrôlant l’effet des autres.
+- Cette équation peut être récrite :
+
+$Y_1 = \alpha + \beta_1 X_{11} + \beta_2 X_{21} + ... + \beta_k X_{k1} + \epsilon_1$
+$Y_2 = \alpha + \beta_1 X_{12} + \beta_2 X_{22} + ... + \beta_k X_{k2} + \epsilon_2$
+...
+$Y_n = \alpha + \beta_1 X_{1n} + \beta_2 X_{2n} + ... + \beta_k X_{kn} + \epsilon_n$
+
+Cette façon d’écrire les équations est difficile à manipuler:
+
+Notation matricielle: $Y = X\beta + \epsilon$
+
+## Spécification
+
+![](../Images/matrice_regression.png)
+## Estimation des paramètres
+
+## Hypothèses
+
+
+
+```{r, out.width="80%"}
+knitr::include_graphics("../Images/hypotheses_regression.png")
+```
+
+## Estimation des paramètres
+
+- Les paramètres inconnus:
+  - k (beta) + 1 (alpha) paramètres
+  - $\sigma^2$
+
+- Estimation par les moindres carrés ordinaires ou la méthode des maximums de vraisemblance: Plus difficile à estimer.
+
+
+## Estimation
+
+- On démontre que :
+
+$\beta^* = (X^{'}X)^{-1}(X^{'}Y)$
+
+Variance-covariance de $\beta^* = \sigma^2(X^{'}X)^{-1}$
+
+Mais encore une fois, $\sigma^2$ n'est pas connu. Il est remplacé par:
+
+$s^2 = e^{'}e/(T-k)$
+
+avec (e = Y-Y')
+
+
+## Estimation sous R: forme générale
+
+**lm**(**formula**, **data**, subset, weights, na.action,
+   method = "qr", model = TRUE, x = FALSE, y = FALSE, qr = TRUE,
+   singular.ok = TRUE, contrasts = NULL, offset, ...)
+   
+- lm : pour dire que vous estimez un modèle linéaire. A l'intérieur, vous devez spécifier :
+
+1. Formula: elle comprend trois éléments :
+  - la variable dépendante: le premier élément dans la parenthèse. Il doit s'agir d'une variable qui est continue.
+  - le tilde (~) qui sépare la variable dépendante des variables indépendantes
+  - les éléments après le ~, ce sont les variables indépendantes. Elles doivent être séparées par des +.
+
+## Estimation sous R: forme générale
+
+2. Data: Vous devez ensuite spécifier les données sur lesquelles vous faites votre régression.
+
+Ces deux éléments sont les plus importants: ils sont obligatoires.
+
+## Estimation sous R: forme générale
+
+```{r}
+?lm()
+```
+
+
+
+
+6. Visualisation des données                                              
+========================================================  
+
+## Introduction
+
+- R dispose de plusieurs systèmes pour créer des graphiques, mais ggplot2 est l’un des plus élégants et des plus polyvalents.
+
+- Avec ggplot2, vous pouvez faire plus rapidement en apprenant un système et en l’appliquant à de nombreux graphiques.
+
+- Parce qu'il fait partie de `tidyverse`:
+ - Il sera chargé automatiquement une fois que vous chargez tidyverse;
+ - Il va fonctionner sur les bases de données ou les `tribbles`
+
+
+## Introduction
+  
+```{r}
+library(tidyverse)
+```
+  
+
+## Introduction
+
+- Les graphiques nous permettent de répondre à plusieurs types de questions :
+
+ - Quelle est la distribution d'une variable?
+ - Est-ce que les filles ont plus tendances à vivre dans un type particulier de structure familiale? 
+ - Comment est-ce que la structure de la famille affecte la santé des enfants?
+ - Est-ce qu'il existe une association entre les attitudes envers la violence conjugale et le niveau de scolarisation  (données dhs_ipv)
+ - Cette relation est-elle positive? négative? ou nulle?
+
+
+## Les types de graphiques
+
+- Dépendent en général du type de variable (qualitative ou quantitative) et du nombre de variables
+
+- Graphiques pour representer une seule variable:
+
+![](../Images/graphique1.jpg)
+
+
+## Les types de graphiques
+
+- Graphiques pour representer l'association entre deux variables  
+
+![](../Images/graphique2.jpg)
+
+
+## Ggplot: Forme générale
+
+- La forme générale d'un code de graphique est la suivante:
+
+![](../Images/ggplot_forme_generale.jpg)
+
+
+1. **ggplot** spécifie que vous utilisez la commande ggplot. C'est à ce niveau que vous spécifiez les données que vous voulez utiliser.
+
+- Ce n'est pas toujours obligatoire si vous utilisez plus d'une base de données.
+
+
+## Forme générale
+
+- La forme générale d'un code de graphique est le suivant:
+
+![](../Images/ggplot_forme_generale.jpg)
+
+2. **geom_function**, contient plusieurs fonctions pour spécifier le type de graphique que vous voulez faire. Le type de graphique indique le nombre de paramètres à inclure.
+  - Exemples: geom_histogram() pour les **histogrammes** 
+  - geom_point() pour les **diagrammes de dispertions**,
+  - geom_barplot() pour les **diagrammes de barre**.
+  - La liste complète est ici: https://ggplot2.tidyverse.org/reference/
+
+## Forme générale
+
+- La forme générale d'un code de graphique est la suivante:
+
+![](../Images/ggplot_forme_generale.jpg)
+
+3. **aes** pour aestetics indique le nombre de paramètres à passer à la fonction **geom_function**. Il permet également de spécifier des informations sur le graphique.
+
+
+
+## Exemples: Visualiser la distribution univariée
+
+## Introduction
+
+- Nous allons utiliser les données dhs_ipv
+
+```{r, warning=FALSE, results='hide', message=FALSE}
+
+library(tidyverse)
+
+dhs_ipv <- read_csv("../données/dhs_ipv.csv")
+dhs_ipv <-
+  dhs_ipv %>% 
+  mutate(beat_burnfood_cat = factor(ntile(beat_burnfood, 4), 
+                                    labels = c('très faible', 'faible', 'élevé', 'très élevé')),
+         beat_goesout_cat = factor(ntile(beat_goesout, 4), 
+                                   labels = c('très faible', 'faible', 'élevé', 'très élevé')),
+         sec_school_cat = factor(ntile(sec_school, 3), 
+                                 labels = c('pauvre', 'moyen', 'riche')),
+         no_media_cat = factor(ntile(no_media, 3), 
+                               labels = c('riche', 'moyen', 'pauvre')))
+```
+
+
+## Introduction
+
+- et les données crsc_small
+
+```{r, warning=FALSE, results='hide', message=FALSE}
+
+crsc96 <- read_csv("../données/cora-crsc1996-E-1996_F1.csv")
+crsc96_small <-
+  crsc96 %>% 
+  select(sexq, region, age, ageq, q1, q2, q3, q4, q44, q95) %>% 
+  mutate(sexe = factor(sexq, labels = c("Homme", "Femme")),
+         q2_new = factor(q2, 
+                         labels = c("totally agree", "agree somewhat", 
+                                    "DK/NA", "disagree somewhat", "totally disagree")))
+
+```
+
+## Distribution univariée
+
+- Histogramme : pour variable continue
+- Diagramme de barre : pour variable catégorielle
+- Diagramme de quartile qui résume cinq indicateurs
+- Diagramme circulaire
+
+## Exemple: histogramme
+
+```{r, out.width = '70%', message = FALSE, warning=FALSE, fig.align='center'}
+
+ggplot(crsc96_small) +
+  geom_histogram(aes(x = age))
+
+```
+
+## Exemple: histogramme
+
+- L'histogramme est une méthode courante pour visualiser la distribution d'une variable numérique plutôt que d'une variable factorielle.
+- Un histogramme divise les données en champs
+- L’aire de chaque domaine représente la proportion d’observations qui y sont classées. 
+- La hauteur de chaque case représente la densité, qui est égale à la proportion d'observations dans chaque case divisée par la largeur de la case. 
+- Un histogramme se rapproche de la distribution d'une variable.
+
+
+## Exemple: histogramme
+
+- Dans le cadre de cette présentation, je mets des options dans le **chunk** (Vous ne les voyez pas dans la présentation, regarder plutôt le fichier .rmd)
+
+ - **out.width** pour préciser la largeur du graphique
+ - **message = FALSE** : pour ne pas afficher des messages
+ - **warning = FALSE** : pour ne pas afficher des messages d'avertissement.
+
+- Il faut les utiliser avec précaution. Les messages et les warning nous donnent des informations, par exemple sur les valeurs manquantes.  
+
+## Exemple: histogramme
+
+- Voici ce que vous obtenez si je ne les mets pas.
+
+```{r}
+
+ggplot(dhs_ipv) +
+  geom_histogram(aes(x = beat_burnfood))
+
+```
+
+## Exemple: Diagramme en bâtons ou à barres
+
+- Pour résumer la distribution d'une variable **facteur** ou d'une **variable factorielle** (ou d'une variable catégorielle ou qualitative) avec plusieurs catégories, un simple tableau avec des comptes ou des proportions est souvent suffisant. 
+- Cependant, il est également possible d'utiliser un graphique en barres pour visualiser la distribution.  
+
+## Exemple: Diagramme en bâtons
+
+```{r, out.width = '70%', message = FALSE, warning=FALSE, fig.align='center'}
+
+ggplot(crsc96_small) +
+  geom_bar(aes(x = q2_new))
+
+```
+
+
+## Exemple: Diagramme en bâtons
+
+- Dans les graphiques précédents, l'ordonnée (y) est indiqué en effectif. Ceci pose un problème de comparaison entre différents échantillons.
+- Dans ce cas, il faut plutôt utiliser les proportions.
+
+
+## Exemple: Diagramme en bâtons
+
+```{r, out.width = '70%', message = FALSE, warning=FALSE, fig.align='center'}
+
+ggplot(crsc96_small) +
+  geom_bar(aes(x = q2_new, y = ..prop.., group = 1))
+
+```
+
+## Exemple: Diagramme en bâtons
+
+- Que se passe-t-il si vous ne mettez pas **group = 1**
+
+- On peut représenter ce diagramme par un diagramme circulaire. Comment créer un diagramme circulaire?
+
+## Diagramme circulaire
+
+https://ggplot2.tidyverse.org/reference/coord_polar.html
+
+```{r, out.width = '60%', message = FALSE, fig.align='center'}
+
+ggplot(crsc96_small) +
+  geom_bar(aes(x = factor(1), fill = q2_new), width = 1) + 
+  coord_polar("y", start = 0) 
+                  
+```
+
+
+## Exemple: Diagramme de quartile 
+ 
+- La boîte à moustache représente un autre moyen de visualiser les distributions d'une variable numérique.
+- Une boîte à moustache visualise **la médiane**, **les quartiles** et **l'écart-interquartile** sous la forme d'un seul objet.
+
+```{r, out.width = '50%', message = FALSE, warning=FALSE, fig.align='center'}
+
+ggplot(crsc96_small) + 
+  geom_boxplot(aes(y = age))
+
+```
+
+## Exemple: Diagramme de quartile ou boîte à moustaches
+
+- C'est particulièrement utile lorsque vous **comparez la distribution de plusieurs variables** en les plaçant côte à côte. 
+
+- `geom_boxplot` permet de représenter des boîtes à moustaches. On lui passe en **y** (axe des ordonnées) la variable dont on veut étudier la répartition (variable quantitative), et en **x** (axe des abscisses) la variable contenant les classes qu’on souhaite comparer (variable qualitative). 
+
+
+## Exemples: Visualiser la distribution bivariée
+
+## Croisement de deux variables qualitatives
+
+
+```{r, out.width = '70%', message = FALSE, fig.align='center'}
+
+ggplot(crsc96_small) +
+  geom_bar(aes(x = sexe, fill = q2_new))
+
+
+ggplot(crsc96_small) +
+  geom_bar(aes(x = sexe, y = ..prop.., fill = q2_new))
+
+```
+
+- Ce graphique nous donne pour chaque sexe, le nombre de personnes qui sont dans chaque catégorie de la variable dépendante.
+- Il a cependant un problème, c'est difficile de comparer les nombres bruts. Il faut des pourcentages.
+
+
+## Croisement de deux variables qualitatives
+
+```{r, out.width = '60%', message = FALSE, fig.align='center'}
+
+ggplot(crsc96_small) +
+  geom_bar(aes(x = sexe, fill = q2_new), position = "fill")  
+
+```
+
+- On voit clairement la différence d'opinion entres les hommes et les femmes.
+
+
+## Croisement de deux variables qualitatives
+- On peut changer les couleurs, on verra cela plus loin.
+- http://www.sthda.com/french/wiki/couleurs-dans-r
+
+```{r, out.width = '60%', message = FALSE, fig.align='center'}
+
+ggplot(crsc96_small) +
+  geom_bar(aes(x = sexe, fill = q2_new), position = "fill") +
+  scale_fill_brewer(palette="PRGn") 
+# Changer PRGn avec un chiffre
+
+```
+
+## Croisement d'une variable quantitative et d'une variable qualitative
+
+- Croiser une variable quantitative et une variable qualitative, c’est essayer de voir si les valeurs de la variable quantitative se répartissent différemment selon les catégories d’appartenance de la variable qualitative.
+
+## Croisement d'une variable quantitative et d'une variable qualitative
+
+- Avant de présenter ce diagramme, regardons un peu la distribution de la variable beat_burnfood par région.
+
+```{r, out.width = '65%', message = FALSE, warning=FALSE, fig.align='center'}
+
+a <-
+ggplot(dhs_ipv) + 
+  geom_text(aes(x = region, y = beat_burnfood, 
+                label = country, color = region), size = 2)
+
+```
+
+## Croisement d'une variable quantitative et d'une variable qualitative
+
+```{r, out.width = '70%', message = FALSE, warning=FALSE, fig.align='center'}
+a 
+  
+```
+
+- Commenter ce graphique.
+
+## Croisement d'une variable quantitative et d'une variable qualitative
+
+```{r, out.width = '60%', message = FALSE, warning=FALSE, fig.align='center'}
+a + 
+  theme(axis.text.x = element_text(angle = 20, hjust = 1),
+        legend.position = "none")
+  
+```
+
+## Exemple: Diagramme de quartile 
+
+- Le diagramme de quartile permet de synthétiser l'information contenue dans ce nuage de points pour une comparaison plus efficiente.
+
+```{r, out.width = '60%', message = FALSE, warning=FALSE, fig.align='center'}
+
+b <- ggplot(dhs_ipv) + 
+  geom_boxplot(aes(x = region, y = beat_burnfood)) +
+  ylim(0, 80)
+
+b
+
+?ylim
+```
+- Note : x doit être une variable qualitative, et y une variable quantitative.
+
+
+## Exemple: Diagramme de quartile 
+
+```{r, out.width = '60%', message = FALSE, warning=FALSE, fig.align='center'}
+c <- ggplot(dhs_ipv) + 
+  geom_boxplot(aes(x = region, y = sec_school)) #+
+  #ylim(0, 80)
+c
+
+```
+
+## Exemple: Diagramme de quartile 
+
+- Commencez-vous par tirer une petite conclusion ici?
+- Pour bien visualiser le tout, il faut les mettre dans un même graphique. La commande **ggarrange** du package **ggpubr** vous permet de faire cela.
+
+## Exemple: Diagramme de quartile 
+
+```{r, out.width = '70%', message = FALSE, warning=FALSE, fig.align='center'}
+
+#install.packages("ggpubr")
+library(ggpubr)
+ggarrange(b, c, ncol = 2)
+
+
+```
+
+
+## Association entre deux variables quantitatives
+
+##  Corrélation linéaire : Croisement de deux variables quantitatives 
+
+
+```{r, out.width = '65%', message = FALSE, warning=FALSE, fig.align='center'}
+
+ggplot(dhs_ipv) +
+  geom_point(aes(x = sec_school, y = beat_burnfood)) 
+
+```
+
+##  Corrélation linéaire : Croisement de deux variables quantitatives 
+
+
+```{r, out.width = '70%', message = FALSE, warning=FALSE, fig.align='center'}
+
+ggplot(dhs_ipv) +
+  geom_point(aes(x = no_media, y = beat_burnfood)) 
+
+```
+
+
+
+## Remarques
+- Les annotations graphiques sont très utiles pour mettre en évidence les messages clés.
+- Dans un bulletin ou un rapport statistique, tous les graphiques doivent être étiquetés comme des figures et numérotés, en fonction de leur ordre d'apparition.
+- Ecrire clairement les titres : préciser la région et la période.
+- Soyez concis, en nommant les principaux axes du graphique.
+- Le texte du graphique doit être horizontal.
+- Si les étiquettes ne tiennent pas dans l’espace requis, transposez le graphique ou convertissez les unités.
+   - Elles doivent être concises et pertinentes.
+   - Placez les sur le graphique aussi près que possible des points de données qui vous intéressent.
+- Indiquer la source
+
+## Remarques
+
+https://slideplayer.fr/slide/10114066/
+
+## Pour aller plus loin
+
+>- Plus dans aes : **mappage** :  c'est une mise en relation entre un **attribut graphique du geom** et une variable du tableau de données.
+  - Changer les couleurs (*color*), la taille (*size*), la position (*position*), la transparence (*alpha*), le remplissage (*fill*)
+
+>- **Facets** : le **faceting** permet d’effectuer plusieurs fois le même graphique selon les valeurs d’une ou plusieurs variables qualitatives (notre *group_by*): facet_wrap, facet_grid
+
+>- Les **scales** : ils permettent de modifier la manière dont un attribut graphique va être relié aux valeurs d’une variable, et dont la légende correspondante va être affichée. 
+
+>- Les **thèmes** : ils permettent de contrôler l’affichage de tous les éléments du graphique qui ne sont pas reliés aux données : **titres**, **grilles**, **fonds**, etc.
+https://ggplot2.tidyverse.org/reference/theme.html
+
+
+## Pour aller plus loin : exemple 1
+
+
+```{r, out.width = '75%', message = FALSE, warning=FALSE}
+
+d <- ggplot(dhs_ipv) +
+  geom_point(aes(x = no_media, y = beat_burnfood, color = region)) +
+  geom_smooth(aes(x = no_media, y = beat_burnfood, color = region), 
+              method = lm, se = FALSE,  formula = y ~ x) + 
+  labs(title = "Association entre accès aux médias et attitudes face à la violence",
+       x = "Non accès aux médias (%)",
+       y = "Battre si brûle la nourriture (%)") +
+  theme_bw() +
+  theme(legend.position = "bottom", legend.direction = "horizontal") 
+ 
+
+```
+
+## Pour aller plus loin : exemple 1
+
+```{r, out.width = '70%', message = FALSE, warning=FALSE, fig.align='center'}
+d
+
+```
+
+## Pour aller plus loin : exemple 2
+
+```{r, out.width = '75%', message = FALSE, warning=FALSE, fig.align='center'}
+
+e <- ggplot(dhs_ipv) +
+  geom_point(aes(x = no_media, y = beat_burnfood, color = beat_burnfood)) +
+  scale_color_gradient("beat_burnfood", low = "blue", high = "red") +
+# scale_size(range = c(0,4), breaks = c(15, 25, 35, 45)) +
+  facet_wrap(~region) +
+  labs(title = "Association entre accès aux médias et attitudes face à la violence",
+       x = "Non accès aux médias (%)",
+       y = "Battre si brûle la nourriture (%)",
+       "region" = "Région")  +
+  theme_bw() 
+
+```
+
+## Pour aller plus loin : exemple 2
+
+```{r, out.width = '75%', message = FALSE, warning=FALSE, fig.align='center'}
+e
+```
+
+
+## Ressources
+- https://www.google.com/search?q=ggplot+theme%2C+dont+show+legend&oq=ggplot+theme%2C+dont+show+legend&aqs=chrome..69i57j0.7717j0j4&sourceid=chrome&ie=UTF-8
+- https://juba.github.io/tidyverse/08-ggplot2.html#
+  - Fortement recommandé
+- https://www.rstudio.com/resources/cheatsheets/
+  
+- http://r4ds.had.co.nz/data-visualisation.html#aesthetic-mappings
+- http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+- http://www.cookbook-r.com/Graphs/
+
+- http://www.ggplot2-exts.org/gallery/
+  - Si vous y trouver de la passion...
+
+
+7. Traitement des problèmes
+=====================================
+
+## Données manquantes
+
+## Plan de présentation
+
+1. Introduction
+
+2. Type de données manquantes
+
+3. Traitement des données manquantes (théorie)
+
+4. Conséquences des données manquantes
+
+5. Traitement des données manquantes (dans tidyverse)
+
+6. Exercices
+
+
+
+## Introduction
+
+- Si vous travaillez avec les données de l'enquête ELNEJ (enquête longitudinale nationale sur les enfants et les jeunes). 
+
+- Il s'agit, comme son nom l'indique, d'une enquête longitudinale qui a suivi les enfants depuis leur naissance jusqu'à leur adolescence. On reparlera de cette enquête plus tard.   
+
+- Le volet de l'enquête de 1995 avait donné les résultats sur la consommation d'alcool
+
+  
+## Exemple 1: Consommation d'alcool?
+
+
+```{r}
+knitr::include_graphics("../Images/boire_alcool.jpg")
+```
+
+## Consommation d'alcool?
+
+- Dans les réponses possibles, il y a des catégories qui nous fournissent peu d'information:
+  - Il y a par exemple, 272 personnes qui n'ont pas déclaré d'information à la question. 
+  - Que faisons-nous de ces cas et quelles conséquences ont-ils sur nos analyses?
+
+
+## Exemple 2: Consommation d'alcool?
+
+```{r}
+knitr::include_graphics("../Images/soule.jpg")
+```
+- Il y a une nouvelle catégorie qui est présent et qui est sans objet, que signifie-t-elle?
+
+## Autres catégories manquantes
+
+- Ne sait pas
+- Refus
+- Les valeurs 6, 7, 8, 9, 96, 99, 996, 999 par exemple aussi indiquent des situations de données manquantes.
+- Mais, faites toujours attention, un 6 peut signifier autre chose, mais rarement un 9 s'il y a moins de 9 catégories.
+- Vous avez du savoir alors d'où viennent les 3954 personnes sans objet?
+
+## Introduction 
+
+- Les données manquantes sont inhérentes à toute recherche: il n'y a aucun moyen de les éviter, on peut toutefois les réduire par une meilleure préparation de la collecte des données.
+- Cependant, le traitement que vous faites d'elles dépend de leur nature: ne faites jamais les choses à l'aveugle.
+- Par exemple à la question: "Est-ce que vous pensez que l'avortement doit-être permis à toute femme qui le désire?", la réponse *Ne sait pas* peut exprimer une incertitude qui se situerait entre le oui et le non. Dans ce cas, cela ne constitue pas une donnée manquante. 
+  - Il en est parfois aussi de réponses comme : *Sans opinion*
+- La décision finale dépend de :
+  - votre question de recherche;
+  - l'interprétation sémantique que vous faites de la réponse.
+- Comme toujours, refléchissez sérieusement lorsque le choix se présente.
+
+
+## Type de données manquantes
+
+## Non-réponses complètes *(unit non-response)*
+
+- L'ensemble des données est perdu. On parle de **non-réponse totale**
+- Aucun répondant admissible à la maison
+  - Momentanément absent
+  - Refusé
+  - Vacant
+  - Pas un logement
+  - Maison temporaire / maison de vacances
+
+## Non-réponses partielles *(item non-response)*
+- Refus de répondre à des éléments sensibles
+  - Comportement criminel
+  - Comportement sexuel
+  - Revenu
+
+- Questionnaires trop longs et compliqués
+  - Répondant.e.s fatigué.e.s
+  - Les intervieweurs oubliant de poser certaines questions
+
+### Tendances
+https://academic.oup.com/ijpor/article/22/4/535/663328
+
+
+## Traitement des données manquantes - théories
+
+## Deux solutions 
+
+- Exclusion des données manquantes
+  - Exclusion de données manquantes "en paires"
+  - Exclusion de données manquantes en "liste"
+
+- Remplacement des données manquantes
+  - Imputation : remplacer les données manquantes par une autre valeur:
+    - par la moyenne des observations non manquantes
+    - par l'information provenant des experts
+    - par les autres informations de la base des données 
+
+- Autres approches plus modernes : multiples imputations
+
+
+## Exclusion de données manquantes "en paires"
+
+- L'exclusion des cas concerne exclusivement exclusivement les variables utilisées dans le calcul d'une statistique données
+- Exemple
+```{r, echo=FALSE, fig.align='center', out.height="80%", out.width="80%"}
+knitr::include_graphics("../Images/manquant.jpg")
+```
+
+## Exclusion de données manquantes "en paires"
+
+- Si vous calculer la moyenne des âges, vous utiliserez uniquement 5 information, l'individu 5 ne sera pas utilisé, ça on ne connaît pas son âge;
+- Par contre si vous calculer un tableau croisé entre l'âge et la consommation d'alcool, vous serez amené à laisser les individus 3 et 5 car ils ont des valeurs manquantes pou une au moins des variables. Donc, vous aurez une taille de l'échantillon de 4.
+
+## Exclusion de données manquantes en "liste"
+
+- L'exclusion est faite sur tous les cas pour lesquels il manque des données pour l'ensemble de l'analyse, même si ce cas possède des données pour certaines variables.
+
+- Avec l'exemple précédent, si je m'intéresse à la relation entre les trois variables age, sexe et consommation (par exemple, tableau à trois entrées, régression multiple...), je ne travaillerai uniquement qu'avec 2 individus (1 et 6). Les autres variables ont des valeurs manquantes.
+
+```{r, echo=FALSE, fig.align='center', out.height="80%", out.width="80%"}
+knitr::include_graphics("../Images/manquant.jpg")
+```
+
+## Exclusion en paires ou en liste
+
+- L'exclusion "en paires" a l'avantage de maximiser l'utilisation des données disponibles;
+- L'exclusion "en liste" a l'avantage de baser toutes les statistiques sur le même groupe de cas.
+- Les résultats obtenus ne sont pas forcement les même selon que vous faites une exclusion **en paire** ou **en liste**. 
+- Pour maintenir la consistance de votre échantillon tout au long de l'analyse, vous utiliserez souvent la procédure d'exclusion en liste.
+
+## Conséquences de l'exclusion des données manquantes
+
+## Perte d'informations
+- Les données manquantes sont de l'information que vous ne pouvez pas utiliser ==> réduit votre échantillon
+
+
+## Conséquences dépend de la cause des données manquantes
+
+- Sans cause aucune: c'est à dire quand les données manquantes sont aléatoires, on dit qu'elles sont **MCAR** (*missing completely at random*) ==> il n'y a pas de biais sur l'estimation que vous faites. Par exemple, la moyenne que vous obtenez de l'échantillon est une bonne réflexion de la moyenne de la population.
+
+```{r, echo=FALSE, fig.align='center', out.height="50%", out.width="80%"}
+knitr::include_graphics("../Images/mcar.jpg")
+```
+
+
+## Conséquences dépend de la cause des données manquantes
+
+- Cause dépend d'une autre variable: on dit que les données manquantes sont **MAR** (*missing at random*) ==> En contrôlant pour la source des données manquantes, on peut réduire le biais. C'est le cas le plus fréquent.
+
+
+```{r, echo=FALSE, fig.align='center', out.height="50%", out.width="80%"}
+knitr::include_graphics("../Images/mar.jpg")
+```
+
+## Conséquences dépend de la cause des données manquantes
+
+- Cause dépend de la variable elle-même: on que les données manquantes sont **MNAR** (*missing not at random*). C'est la source de biais sérieux et vous devez toujours porter une attention particulière à la manière dont vous commentez vos résultats en présence de données manquantes (revenu manquant pour les gens qui ont un revenu faible).
+
+
+```{r, echo=FALSE, fig.align='center', out.height="50%", out.width="80%"}
+knitr::include_graphics("../Images/mnar.jpg")
+```
+
+## Conséquences plus sérieuses: biais
+
+- Ceux/celles qui refusent de répondre à une question donnée PEUVENT ne pas être aléatoirement distribué.e.s au sein de la population
+
+- En clair, ils/elles sont différent.e.s et ils/elles peuvent être différent.e.s justement pour le sujet qui vous intéresse.
+
+- Exemples: Imaginer que les pauvres refusent de répondre à votre question sur le revenu, alors la relation que vous observez entre pauvreté et éducation par exemple serait biaisée.
+
+- Quel est le sens de ce biais?
+
+
+## Autres exemples
+
+- Le revenu ou le fait de payer des impôts est une information dont la fréquence de réponse varie avec le niveau du revenu ou le fait ou non de payer des impôts.
+- Les aidants des personnes âgées dépendantes, pour savoir si la personne aidée représente une charge,  la présence d’une réponse dépend de la valeur de la réponse 
+- Consommation d’alcool est souvent d’autant plus minimisée que cette consommation est forte. 
+- Dans les dossiers médicaux, la probabilité qu’un symptôme négatif soit noté est plus faible que la probabilité qu’un symptôme positif soit noté.
+
+
+Solutions modernes
+========================
+
+## Imputations multiples
+
+- L'imputation est basée sur la distribution postérieure
+- Prend en compte l'incertitude
+- Plusieurs ensembles de données (généralement 3-5) sont construits avec des valeurs manquantes différentes
+- Les données sont analysées en utilisant une analyse de jeu de données complet, et les estimations sont moyennées
+- Implique une méthode complexe d'imputation
+- Basée sur l'hypothèse de MAR (Missing At Random)
+- Voir le package MICE dans R
+
+## Imoutations multiples
+
+Les procédures d'imputation multiple (IM) comprennent généralement trois étapes :
+
+1. Imputation des données: 
+Cette étape consiste à « remplir » les données en supposant MAR (il existe plusieurs méthodes d'imputation disponibles, bien que pour un ensemble de données contenant à la fois des variables catégorielles et continues, l'imputation puisse être une tâche difficile. Cette étape est répétée m fois (m entre 3 et 10 est généralement suffisant); chaque ensemble de valeurs manquantes imputées est unique.
+
+## Imoutations multiples
+
+Les procédures d'imputation multiple (IM) comprennent généralement trois étapes :
+
+> 2. Analyse de routine: Cette étape consiste à analyser chaque ensemble de données « complet ».
+
+> 3. Agrégation des résultats pour l'estimation des paramètres. La troisième étape agrège les estimations des paramètres à partir des résultats de chaque analyse.
+
+## Imoutations multiples
+
+```{r, echo=FALSE, fig.align='center', out.height="50%", out.width="80%"}
+knitr::include_graphics("../Images/multiple_imp.png")
+```
+
+## Package MICE
+
+1. **Modèles prédictifs** : MICE utilise des modèles prédictifs (par exemple, la régression linéaire, la forêt aléatoire, l'arbre de décision, etc.) pour estimer les valeurs manquantes. Ces modèles sont construits à partir des variables observées, ce qui permet à MICE d’imputer les valeurs manquantes tout en tenant compte des relations au sein de l’ensemble de données.
+
+## Package MICE
+
+2. **Équations chaînées** : La partie « équations chaînées » de MICE fait référence au processus itératif d’imputation des valeurs pour chaque variable. À mesure que les valeurs manquantes de chaque variable sont imputées, elles sont utilisées comme prédicteurs pour imputer les valeurs manquantes dans d’autres variables. Cette approche entrelacée garantit que les valeurs imputées sont influencées par les relations observées.
+
+## Package MICE
+
+3. **Imputations multiples** : MICE génère plusieurs ensembles de données imputées, chacun reflétant une variation plausible du schéma de manquants. En regroupant les résultats de ces ensembles de données imputées, la variabilité introduite par le processus d’imputation est prise en compte dans les analyses ultérieures.
+
+## Package MICE
+
+```{r, echo=FALSE, fig.align='center', out.height="50%", out.width="80%"}
+knitr::include_graphics("../Images/multiple_imp1.jpg")
+```
