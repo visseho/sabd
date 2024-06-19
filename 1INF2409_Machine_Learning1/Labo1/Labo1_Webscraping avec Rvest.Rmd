@@ -32,7 +32,7 @@ for (package in packages) {
 
 ```
 
-# Extraire les informations d'uns eul site
+# Extraire les informations d'un seul site
 
 https://sicss.io/locations
 
@@ -59,17 +59,33 @@ parsed_html
 
 ```{r}
 
+untexte <-
 parsed_html |>
   html_node("body") |>
   html_node("p") |>
   html_text()
 
+untexte
+
+# plusieurs noeuds
+
+plutexte <- 
 parsed_html |>
   html_node("body") |>
   html_nodes("p") |>
   html_text()
 
 
+plutexte
+
+
+texte <- 
+parsed_html |>
+  html_node("body") |>
+#  html_nodes("p") |>
+  html_text()
+
+texte
 ```
 
 
@@ -106,6 +122,7 @@ parsed_html |>
   html_nodes(".embed-responsive-item.card-img-top") |>
   html_attr("src") |>
   
+
   url_absolute(url)
 
 ?html_nodes()
@@ -129,12 +146,15 @@ parsed_html |>
   html_node(xpath = '//*[@id="mw-content-text"]/div[1]/table[1]') |>
   html_table()
 
+tableau_xpath
 
 tableau_css <-
 parsed_html |>
  # html_node(xpath = '//*[@id="mw-content-text"]/div[1]/table[5]') |>
-  html_node(css = '.headerSortDown~ .headerSort , p+ .sticky-header td , .headerSortDown') |>
+  html_node(css = 'p+ .sticky-header td , p+ .sticky-header .headerSort') |>
   html_table()
+
+tableau_css
 
 
 ```
@@ -154,8 +174,11 @@ url <- "https://research.un.org/en/docs/ga/quick/regular/55"
 parsed_html <- read_html(url)
 
 table <- parsed_html |>
-  html_node(".tablefont") |>
+  html_node(".tablefont") |>    #.tablefont :nth-child(1)
   html_table()
+
+table
+
 
 table <- parsed_html |>
   html_node(".tablefont") |>
@@ -166,6 +189,7 @@ table |>
   janitor::row_to_names(row_number = 1) |>
   select(1:6)
 
+table
 help(row_to_names)
 
 ```
@@ -177,8 +201,8 @@ La fonction purrr peut aussi aider.
 
 ```{r}
 
-urls <- paste0("https://research.un.org/en/docs/ga/quick/regular/", 55:75)
-
+urls <- paste0("https://research.un.org/en/docs/ga/quick/regular/", 55:56)
+urls
 output <- list()
 
 for (u in urls) {
@@ -190,7 +214,10 @@ for (u in urls) {
     html_node(".tablefont") |>
     html_table() |>
     janitor::row_to_names(row_number = 1) |>
-    select(1:6)
+    select(1:6) |>
+    mutate(url = u) |>
+    mutate(year = str_extract(url, pattern = "[0-9]+"))
+
 
   output[[u]] <- table
 

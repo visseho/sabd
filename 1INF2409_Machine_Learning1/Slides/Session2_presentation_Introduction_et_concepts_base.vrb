@@ -1,0 +1,9 @@
+\frametitle{Bénéfices pour les scientifiques sociaux}
+\protect\hypertarget{buxe9nuxe9fices-pour-les-scientifiques-sociaux-5}{}
+\textbf{2. Erreur de spécification du modèle : }
+
+\begin{verbatim}
+- Premièrement, les performances prédictives sont similaires ou meilleures, bien qu'ils n'aient pas besoin d'une recherche approfondie pour trouver la spécification finale du modèle comme cela a été fait dans l'analyse originale.
+- Deuxièmement, leur modèle leur permet de calculer des effets marginaux moyens qui sont principalement similaires à l'analyse originale. Cependant, pour une covariable, ils trouvent un résultat substantiellement différent, qui est dû à une erreur de spécification du modèle dans le modèle original.
+- Enfin, la réanalyse découvre également des interactions qui ont été manquées dans la publication originale.
+\end{verbatim}

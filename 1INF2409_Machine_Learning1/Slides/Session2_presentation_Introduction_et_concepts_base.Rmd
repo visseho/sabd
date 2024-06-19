@@ -31,56 +31,67 @@ citation_package: natbib
 
 ## Objectifs
 
-- Comment "l'apprentissage automatique" diffère-t-il des statistiques traditionnelles ?
+>- Comment "l'apprentissage automatique" diffère-t-il des statistiques traditionnelles ?
 
-- Comment est-il utile pour vous, chercheurs en sciences sociales?
+>- Comment est-il utile pour vous, chercheurs en sciences sociales?
 
-- Démystifier l'apprentissage automatique: 
-    - établir des liens avec les statistiques et l'analyse de données
-    - approfondir certains des concepts et méthodes novateurs. 
+>- Démystifier l'apprentissage automatique: 
+
+>- établir des liens avec les statistiques et l'analyse de données
+>- approfondir certains des concepts et méthodes novateurs. 
 
 ## Introduction
 
-- Origine dans l'informatique, mais fortement influencé par:
-    - les mathématiques et 
-    - les statistiques au cours des 15 à 20 dernières années. 
+>- Origine dans l'informatique, mais fortement influencé par:
 
-- Nouveau nom de concepts anciens:
-    - Régression logistique ==> Méthodes de classification, analyse de regroupement (une forme d'apprentissage non supervisé). 
+>- les mathématiques et 
+>- les statistiques au cours des 15 à 20 dernières années. 
 
-- Apprentissage de nouvelles méthodes :
-    - Forêts aléatoires, 
-    - Machines à vecteurs de support et 
-    - les réseaux neuronaux. 
+>- Nouveau nom de concepts anciens:
+
+>- Régression logistique ==> Méthodes de classification, analyse de regroupement (une forme d'apprentissage non supervisé). 
+
+>- Apprentissage de nouvelles méthodes :
+
+>- Forêts aléatoires, 
+>- Machines à vecteurs de support et 
+>- les réseaux neuronaux. 
     
 <!-- Je limiterai les formalisations au minimum et me concentrerai sur la transmission de l'intuition, ainsi que sur des conseils pratiques. Nous espérons que ce chapitre vous rendra à l'aise et familier avec le vocabulaire, les concepts et les processus de l'apprentissage automatique, et vous permettra d'explorer et d'utiliser ces méthodes et outils dans vos propres recherches et pratiques.-->
 
 ## Introduction
 
-- Tâches réalisées autrefois effectuées par des systèmes basés sur des règles, 
-- Demandant énormément de temps aux experts et d'efforts à développer et maintenir ces règles. 
-- Système rigide, non adaptatifs, difficiles à faire évoluer et coûteux à maintenir. 
+>- Tâches réalisées autrefois effectuées par des systèmes basés sur des règles, 
 
-- Les systèmes de machine learning ont commencé à devenir populaires parce qu'ils pouvaient améliorer le système sur tous ces aspects. 
+>- Demandant énormément de temps aux experts et d'efforts à développer et maintenir ces règles. 
+
+>- Système rigide, non adaptatifs, difficiles à faire évoluer et coûteux à maintenir. 
+
+>- Les systèmes de machine learning ont commencé à devenir populaires parce qu'ils pouvaient améliorer le système sur tous ces aspects. 
 
 ## Introduction
 
-- Introduction non-exhaustive au machine learning : se référer à  [@Flach; @HastieTibshirani; @mitchell1997machine]. 
-- Iintroduction courte et accessible au machine learning pour les scientifiques en sciences sociales
-- Aperçu du processus global de machine learning, 
-- Fournir une introduction intuitive aux méthodes de machine learning, 
-- Donnero quelques conseils pratiques qui seront utiles pour utiliser ces méthodes, et 
-- Laisser une grande partie de la théorie statistique aux manuels de machine learning. 
+>- Introduction non-exhaustive au machine learning : se référer à  [@Flach; @HastieTibshirani; @mitchell1997machine]. 
+
+>- Introduction courte et accessible au machine learning pour les scientifiques en sciences sociales
+
+>- Aperçu du processus global de machine learning, 
+>- Fournir une introduction intuitive aux méthodes de machine learning, 
+>- Donner quelques conseils pratiques qui seront utiles pour utiliser ces méthodes, et 
+>- Laisser une grande partie de la théorie statistique aux manuels de machine learning. 
 
 
 ## Qu'est-ce que l'apprentissage automatique?
 
-- Lorsque les humains améliorent leurs compétences avec l'expérience, on dit qu'ils **apprennent**. - Est-il également possible de programmer des ordinateurs pour qu'ils fassent de même ? 
-- Arthur Samuel a inventé le terme apprentissage automatique en 1959 [@samuel1959some], 
+>- Lorsque les humains améliorent leurs compétences avec l'expérience, on dit qu'ils **apprennent**. - Est-il également possible de programmer des ordinateurs pour qu'ils fassent de même ? 
 
-    - Programmer l'ordinateur à jouer au jeu de dame
-    - S'améliore après chaque partie
-    - Est devenu meilleur que le programmeur humain. 
+>- Arthur Samuel a inventé le terme apprentissage automatique en 1959 [@samuel1959some], 
+
+    >- Programmer l'ordinateur à jouer au jeu de dame
+    >- S'améliore après chaque partie
+    >- Est devenu meilleur que le programmeur humain. 
+
+## Qu'est-ce que l'apprentissage automatique?
 
 - Autres appellations:
     - Apprentissage statistique, 
@@ -89,32 +100,41 @@ citation_package: natbib
 
 ## Qu'est-ce que l'apprentissage automatique?
 
-- L'apprentissage automatique a considérablement dépassé l'apprentissage du jeu de dames:
-- Les systèmes d'apprentissage automatique ont appris 
-    - à conduire (et à garer) des voitures autonomes, 
-    - sont intégrés dans des robots, 
-    - peuvent recommander des livres, 
-    - des produits et des films qui nous intéressent (parfois), 
-    - identifier des médicaments, des protéines et des gènes à étudier pour guérir des maladies,
-    - détecter le cancer et d'autres pathologies dans les radiographies et autres types d'imagerie médicale, 
-    - nous aider à comprendre comment le cerveau humain apprend le langage, 
-    - aider à identifier quels électeurs sont persuadables lors des élections, 
-    - détecter quels étudiants sont susceptibles de nécessiter un soutien supplémentaire pour obtenir leur diplôme de lycée à temps, et 
-    - aider à résoudre de nombreux autres problèmes. 
+>- L'apprentissage automatique a considérablement dépassé l'apprentissage du jeu de dames:
+
+>- Les systèmes d'apprentissage automatique ont appris
+
+  >- à conduire (et à garer) des voitures autonomes, 
+  >- sont intégrés dans des robots, 
+  >- peuvent recommander des livres, 
+  >- des produits et des films qui nous intéressent (parfois), 
+  >- identifier des médicaments, des protéines et des gènes à étudier pour guérir des maladies,
+  >- détecter le cancer et d'autres pathologies dans les radiographies et autres types d'imagerie médicale, 
+  >- nous aider à comprendre comment le cerveau humain apprend le langage, 
 
 ## Qu'est-ce que l'apprentissage automatique?
 
-- Au cours des 20 dernières années, AA est devenu un domaine interdisciplinaire:
-  - l'informatique, 
-  - l'intelligence artificielle, 
-  - les bases de données et 
-  - les statistiques. 
+>- L'apprentissage automatique a considérablement dépassé l'apprentissage du jeu de dames:
 
-- Au cœur de l'apprentissage automatique, il s'agit de concevoir des systèmes informatiques qui s'améliorent avec le temps et l'expérience. 
+  >- aider à identifier quels électeurs sont persuadables lors des élections, 
+  >- détecter quels étudiants sont susceptibles de nécessiter un soutien supplémentaire pour obtenir leur diplôme de lycée à temps, et 
+  >- aider à résoudre de nombreux autres problèmes. 
+
+## Qu'est-ce que l'apprentissage automatique?
+
+>- Au cours des 20 dernières années, AA est devenu un domaine interdisciplinaire:
+    >- l'informatique, 
+    >- l'intelligence artificielle, 
+    >- les bases de données et 
+    >- les statistiques. 
+
+>- Au cœur de l'apprentissage automatique, il s'agit de concevoir des systèmes informatiques qui s'améliorent avec le temps et l'expérience. 
 
 ## Qu'est-ce que l'apprentissage automatique?
 
 - Définition opérationnelle de Tom Mitchell : "Un programme informatique est dit **apprendre de l'expérience** $E$ par rapport à une **certaine classe de tâches** $T$ et une **mesure de performance** $P$, si sa performance à des tâches de la classe $T$, mesurée par $P$, s'améliore avec l'expérience $E$" [@mitchell1997machine]. 
+
+## Qu'est-ce que l'apprentissage automatique?
 
 - Définition intéressante car :
     - centrée sur la tâche 

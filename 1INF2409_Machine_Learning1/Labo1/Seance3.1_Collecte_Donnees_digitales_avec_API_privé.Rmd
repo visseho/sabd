@@ -260,7 +260,6 @@ En résumé, une REST API est un type spécifique d'API utilisé pour interagir 
 # install.packages("rdhs")
 rm(list = ls())
 library(tidyverse)
-library(tidyr)
 library(rdhs)
 library(haven)
   
