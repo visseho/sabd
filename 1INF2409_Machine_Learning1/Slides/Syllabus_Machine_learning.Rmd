@@ -1,0 +1,703 @@
+---
+title: "SOC8645 : Méthodes (computationnelles et) quantitatives avancées en Sociologie"
+author: "Visseho Adjiwanou, PhD."
+date: '`r format(Sys.time(), "%d %B %Y")`'
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+geometry: margin=2.54cm
+fontsize: 12pt
+bibliography: /Users/visseho/Documents/Documents - MacBook Pro/RESEARCH/Methodes_quantitatives.bib
+header-includes:
+- \newcommand{\bcenter}{\begin{center}}
+- \newcommand{\ecenter}{\end{center}}
+- \usepackage{mdframed}
+- \newcommand{\bmdframed}{\begin{mdframed}}
+- \newcommand{\emdframed}{\end{mdframed}}
+- \usepackage{lscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+---
+
+
+<!-- Margin de word: 1.87 ou 2.54  -->
+<!-- Other syllabus
+http://people.cs.vt.edu/tmitra/cs6724/
+http://courses.cse.tamu.edu/caverlee/csce489/schedule.html
+http://people.cs.vt.edu/tmitra/cs6724/resources/
+https://sites.google.com/site/cs492fall2014/materials
+https://ajungherr.github.io/dtd-konstanz-summer2018/assets/Syllabus.pdf
+http://compsocialscience.org/syllabus/
+
+Data and articles to provide for the analysis
+
+- Prof sherbroke
+http://dimension.usherbrooke.ca/dimension/v2ssrcadre.html
+.-->
+
+\newpage
+
+
+\bcenter
+
+
+PLAN DE COURS
+
+Département de sociologie
+
+Université du Québec à Montréal
+
+\ecenter
+
+
+---------------------  --------------------------------------------------------
+**Sigle**              SOC8645
+
+**Titre**              Méthodes quantitatives avancées en Sociologie
+
+**Session**            Automne 2019
+
+**Enseignant**         Vissého Adjiwanou
+
+                       Télephone: 514 987 3000 # 0900
+
+                       Bureau: A5260
+
+                       Couriel: adjiwanou.visseho@uqam.va
+
+---------------------  --------------------------------------------------------
+
+
+> ---
+
+> AVIS À TOUTES LES ÉTUDIANTES ET TOUS LES ÉTUDIANTS
+
+> **Boîte courriel UQAM**
+
+> La boîte courriel est activée automatiquement dans les 48 heures suivant l'inscription à au moins un cours.
+
+> Pour y accéder aller au :
+https://servicesinformatiques.uqam.ca/services/Courriel%20%C3%A9tudiant 
+Vous trouverez votre NIP sur votre relevé facture ou votre bulletin d’inscription
+
+> **REMISE DES TRAVAUX**
+
+> Au moment de la remise des travaux, les étudiants(es) désireux de les récupérer sont priés d’y joindre une enveloppe suffisamment affranchie afin qu’ils leur soient retournés par la poste. Vous devez conserver une copie de vos travaux avant de les déposer dans la chute située face au local A-5070 du Pavillon Hubert-Aquin.
+
+> ---
+
+\newpage
+
+# 1. Description
+
+Le paysage de l'analyse quantitative en sciences sociales tel que nous le connaissons est en train d'être changé dramatiquement devant nous avec d'une part, la multitude des données, notamment des données numériques et administratives qui deviennent de plus en plus disponibles, et d'autre part, avec l'intégration de nouvelles méthodes d'analyses issues des sciences computationnelles pour traiter ces données. Ces changements conduisent à une redéfinition de la nature même des recherches que le chercheur en sciences sociales est amené à mener. Le cours SOC8645 - Méthodes quantitatives avancées en Sociologie -  ambitionne de vous introduire à ces changements et de vous former à prendre plein contrôle de ces nouvelles méthodes. Il vise à renforcer l'utilisation des données sociales et démographiques, quelle que soit leur nature, à des fins d'analyse explicative. 
+
+Ce cours est structuré en deux parties. La première partie présente les concepts fondamentaux de la modélisation statistique et traite de leurs problèmes (causalité, mesure, échantillonnage) et de leurs solutions. Elle se poursuit par la présentation des notions de relation entre les variables et de leur évaluation. Je fais un survol rapide de l'analyse descriptive, suivi d'une série de modèles de régression et de leurs extensions. Dans la deuxième partie du cours, je présente de nouveaux type de données disponibles pour les chercheurs en sciences sociales, principalement les données de Twitter et quelques exemples d'analyses pouvant être conduites avec ces données (analyses textuelles, analyses de réseaux). 
+
+
+# 2. Objectifs
+
+À la fin du cours, l'étudiant sera capable de:
+
+  - comprendre quels sont les types de données en sociologie et en démographie et les problèmes qui s’y rattachent;
+  - comprendre les problèmes conceptuels et empiriques présents dans de nombreuses études empiriques;
+  - appliquer un jugement critique et objectif sur la validité de la méthodologie d'un article scientifique;
+  - Comprendre la différence entre corrélation et causalité;
+  - conduire une analyse descriptive avec une visualisation appropriée des résultats;
+  - savoir utiliser les méthodes statistiques les plus populaires utilisées en sociologie et leurs extensions;
+  - Comprendre et utiliser les nouvelles approches d'analyse sur les données numériques en sciences sociales
+  - Utilisez R pour l'analyse des données.
+
+
+# 3. Matériel
+
+## 3.1. Préalable: 
+
+Vous devez avoir suivi le cours SOC2206, et le cours ou des cours équivalents pour pouvoir suivre ce cours. Si vous pensez avoir oublié les notions de base, je vous conseille de lire rapidement le livre : 
+
+- Fox, W. 1999. Statistiques sociales. Les Presses de l’Université Laval. Traduit de l’Anglais et adapté par L.M. Imbeau, disponible à la bibliothèque de l'UQAM. 
+
+
+## 3.2. Logiciels
+
+Le cours utilise intensivement R. R est un langage de programmation libre et largement utilisé en sciences sociales dans les principales universités américaines. Les étudiants ont été inscrits à des cours en ligne à Datacamp https://www.datacamp.com/groups/demographic-data-and-statistics/assignments une semaine avant le début du semestre. De plus, une session d'introduction sera organisée au début du trimestre. Tout au long du semestre, la programmation en R sera enseignée dans le laboratoire de méthodes quantitatives du département. Des informations additionnelles vous seront données à la rentrée.
+
+Pour pouvoir utiliser ce langage, nous allons recourir à R Studio qui est un environnement de développement intégré. Finalement, R Studio permet de sortir les documents en version Word ou pdf. Pour ce faire, vous aurez besoin aussi d'installer sur votre machine latex. Nous n'allons pas apprendre à utiliser Latex, mais une connaissance antérieure est un atout. Voici la procédure à suivre pour l'installation de R, de RStudio, et de Latex^[Tout ceci vous sera précisé à nouveau lors du premier cours, si vous n'avez pas pu les installer].  
+
+### 3.2.1. Installation de R
+
+Suivez les instructions selon votre système d'exploitation: http://cran.cnr.berkeley.edu/
+
+### 3.2.2. Installer RStudio (Desktop)
+
+- Sur le site de RStudio https://www.rstudio.com/ 
+
+- Ou directement à partir de ce lien: https://www.rstudio.com/products/rstudio/download/
+
+### 3.2.3. Installer Latex
+
+- Pour les utilisateurs de Windows: installez **la complète version de MiKTex** : https://miktex.org/2.9/setup:
+  - Cliquez sur Net Installer 
+  - Téléchargez la version 
+  - Installez la en double-cliquant sur le fichier téléchargé et suivez les instructions.
+
+- Pour les utilisateurs de Mac, vous pouvez utilisez TeXShop : https://pages.uoregon.edu/koch/texshop/
+- Vous pouvez aussi utiliser MiKTex.
+
+### 3.2.4. Datacamp
+Datacamp est une plateforme d'apprentissage en ligne qui sera utilisé tout au long de la session pour appuyer votre apprentissage. Vous n'avez pas à payer pour les cours qui y sont dessus, je m'en suis déjà chargé. Veillez vous inscrire à partir de ce lien pour accéder aux cours: https://www.datacamp.com/groups/shared_links/9a097f100397384b4f659fcbddb786e9e16ff9b2
+
+Je vous **encourage vivement** (dans la mesure de vos possibilités) à compléter les deux premiers chapitres "Introduction à R" et "Introduction to the Tidyverse" avant le début des classes. N'hésitez pas à me contacter si vous avez des questions. S'il y a d'autres cours sur la plateforme qui vous intéresse, faite-moi savoir pour que je les inclus aussi. Il peut s'agir de logiciels ou de notions qui vous intéressent personnellement.
+
+
+## 3.3. Références obligatoires
+
+Cette année, je ne vous recommande pas un livre de cours obligatoire. J'utiliserai plusieurs livres et beaucoup de ressources sont disponibles en ligne. Mais, si vous avez à acheter un livre, je vous recommande vivement le livre de Kosuke Imai, Quantitative social science: An introduction. Princeton University Press (2017).
+
+## 3.4. Autres références
+
+- Jean-Herman, Guay. 2014. Statistiques en sciences humaines avec R, 2^e édition. Presses de l'Université de Laval.
+- John, Fox & Sanford, Weisberg. 2019. An R Companion to Applied regression, 3rd edition. Sage.
+- Salganik, Matthews. 2017. Bit by bit: Social research in the digital age. Princeton University Press. 
+- Wickham, Hadley & Grolemund, Garrett. 2017. R for Data Science: Import, Tidy, Transform, Visualize, and Model data. Boston. O’Reilly. Pp.492
+- Tabachnick, B. et Fidell, L. 2013. Using Multivariate Statistics, 6th Edition. Pearson.
+- Babbie, Earl. 2015. The Practice of social research. 14th Edition. Belmont, CA: Wadsworth.
+http://www.bitbybitbook.com/en/observing-behavior/ - version française en ligne.
+- Kennedy, Peter. 2008. A Guide to Econometrics. Malden, MA: Blackwell Publishing.
+
+## 3.5. Ressources en ligne
+
+En français:
+
+- https://juba.github.io/tidyverse/index.html: Une très bonne ressource en français
+- http://dimension.usherbrooke.ca/dimension/v2ssrcadre.html
+
+En anglais:
+
+- https://clanfear.github.io/CSSS508/: Vous avez une série de cours et de code ici
+- https://jrnold.github.io/qss-tidy/: tous les codes du livre de Kosuke Imai sont réecrits ici en version tidyverse.
+- https://r4ds.had.co.nz/: le livre de Wickham en ligne
+- https://www.bitbybitbook.com/en/1st-ed/preface/: le livre de Salganik en ligne
+- https://data.hypotheses.org/
+
+Comme vous vous en rendrez compte assez rapidement, il y a des millions de ressources en ligne. Votre tâche souvent va consister à trouver la bonne ressource pour la tâche à faire. Aussi, google.com vous sera d'un atout formidable. 
+
+
+# 4. Mode d'évaluation
+
+Trois modes d’évaluation sont mis en place dans le cadre du cours : des lectures obligatoires suivi de travaux pratiques, des devoirs de maison, et la <!--rédaction d'un mini projet, ou de --> réplication d'un article. Une seule approche n'est pas susceptible de vous faire comprendre l'ensemble des méthodes que nous allons voir dans le cadre de ce cours. Quand les devoirs de maison vous permette de travailler chaque méthode, ils ne vous permettent pas de conduire une étude indépendante par vous-mêmes. De même, la réplication d'articles vous permettra uniquement de mieux comprendre une seule méthode et de ne pas avoir une vue globale de l'ensemble des méthodes. Aussi, la combinaison de ces méthodes est pour vous permettre d'avoir une vue globale de l'ensemble des méthodes en même temps que de vous permettre d'investir du temps pour mieux assimiler la méthode qui est plus proche de votre projet de recherche.  
+
+## 4.1.	Lectures d’articles et travaux pratiques
+
+Avant chaque cours, je vous conseille vivement de lire les articles ou sessions de livre assignés à ce cours avant de venir en classe (voir section sur Calendrier). Cela facilitera largement votre compréhension. Vous devez obligatoirement lire ces matériels et produire un résumé. De même, je vais vous assigner des capsules vidéos à compléter sur Datacamp chaque semaine, qui seront évaluées. Quinze pour cent (15%) de la note finale est attribuée à votre engagement avec les matériels.
+
+## 4.2	Travaux de maison 
+
+Vous aurez six (6) devoirs à faire à la maison et à rendre à la veille de chaque nouveau chapitre. Les devoirs vous seront donnés le matin du cours, et vous devez les remettre au bout de 13 jours <!--(sauf le devoir 5 qui doit être rendu après une semaine)-->, c’est-à-dire à la veille du nouveau chapitre. Les devoirs seront un mélange de problèmes analytiques, de simulations informatiques et d'analyse de données. Chaque devoir sera marqué de 0 à 100. Je prendrai seulement la note de vos cinq meilleurs devoirs.
+Les devoir doivent être complétés dans R Markdown, ce qui vous permet d'afficher à la fois vos réponses et le code que vous avez utilisé pour les atteindre. Ne vous inquiétez pas si vous ne connaissez pas RMarkdown, je vais vous montrer comment cela fonctionne. Pour les curieux, voici une description succincte ici: https://data.hypotheses.org/1144
+
+Je répondrai à toutes vos questions concernant les devoirs au cours de la première semaine de remise de ces devoirs. Vous pouvez aussi discuter avec vos camarades à propos des devoirs, mais comprenez que c’est un travail personnel et vous devez rendre un travail personnel, dénué de plagiat et qui reflète votre propre effort. A cet effet, je vous conseille de poser des questions ouvertes à vos camarades (exemple : peux-tu me ré expliquer cette partie du code, cours, etc…) et pas des questions très spécifiques (exemple : comment avez-vous répondu à la question x ?). Si vous avez demandé de l’aide à quelqu’un de la classe, vous devez indiquer le nom de ces personnes sur votre copie. Vous devez indiquer aussi les noms de ceux que vous avez aidés. Les étudiants qui rendront des travaux semblables seront sévèrement pénalisés.  
+
+## 4.3	Projet final
+
+Le dernier mode d'évaluation sera de répliquer un article qui vous sera assigné. Vous aurez à présenter votre projet à mis parcours et finalement soumettre le projet final. Les indications concernant la réplication de l'article vous seront donné en classe. Ce projet comptera pour 40% de la note finale. 
+
+## 4.4.	Note finale
+
+Votre note finale sera une moyenne pondérée de votre note de l'examen final (réplication d'article) (40%), des séries de devoirs (45%), et de vos lectures et travaux pratiques (15%). Je me réserve le droit de fournir un bonus pour une participation active à l'intérieur et à l'extérieur de la classe. Par exemple, un étudiant qui aide activement ses camarades de classe, en répondant aux questions ou qui s'engage de manière productive en classe pourrait avoir droit à une petite prime.
+
+
+# 5. Comment apprendre dans ce cours
+
+<!--
+Je sais que les statistiques peuvent être difficiles, aussi l'aide est disponible lorsque vous en avez besoin. J’ai fait des efforts pour vous donner les outils dont vous avez besoin pour réussir ce cours. En fin de compte, il est de votre responsabilité de mettre en œuvre et de rechercher cette aide. Je suis largement disponible au-delà de mes heures de consultations pour vous aider. N’attendez pas quand c’est trop tard pour demander de l’aide, venez me consulter assez rapidement dès que des problèmes surgissent dans votre apprentissage. -->
+
+Si vous trouvez ce cours difficile, vous n'êtes pas seul. Les statistiques peuvent être difficiles et nous couvrons beaucoup de matières. Cependant, je suis convaincu que vous pouvez y faire face. Dans cette section du syllabus, je vais donner des détails sur certaines des formes de soutien que je propose dans cette classe<!-- et tirer un peu le rideau sur la conception pédagogique-->. \
+
+
+\bmdframed
+
+Vos principales responsabilités dans cette classe sont de **travailler dur** et de **communiquer avec moi** au sujet de vos besoins. Vous ne pouvez pas apprendre si vous ne prenez pas le temps nécessaire pour étudier. Je ne peux pas vous aider si je ne sais pas qu’il y a un problème.
+
+\emdframed
+
+\
+
+Le cours est conçu pour fournir tous les outils auxquels je peux penser pour vous aider à apprendre les matériels. Si vous êtes prêt à y investir du temps, je veux vous assurer que ce temps est utilisé le plus efficacement possible.
+
+## 4.1 Ressources pour obtenir de l'aide
+Il existe quelques sources principales de soutien dans la classe.
+
+**1. Classe et cours en ligne sur datacamp**
+
+Je vous encourage fortement à participer activement en classe et à suivre les capsules vidéos en ligne qui vous seront assignées. Posez des questions pendant le cours si vous ne comprenez pas ce qui se passe. Il n’est même pas nécessaire de poser une question précise: il suffit de lever la main et de me faire savoir que vous ne suivez pas. Je suis toujours content d’arrêter et de revenir en arrière.
+
+**2. Commentaires quotidiens**
+
+Après chaque cours, je vais faire circuler une carte de correspondance et vous demander de noter quelque chose à propos de la classe. Vous pouvez écrire quelque chose que vous avez aimé ou que vous n’avez pas aimé. Quelque chose que vous voulez mieux comprendre ou que vous voulez en savoir plus. Vous voudrez peut-être savoir comment un élément du cours est relié aux objectifs plus larges de la classe. Vous pouvez même simplement dessiner un visage souriant. Je vais répondre aux questions soit en classe ou par mail ou sur Slack.
+
+
+**3. Lectures et diapositives**
+
+Si vous étudiez seul et que vous rencontrez quelque chose que vous ne comprenez pas, votre premier réflexe devrait être **d’étudier les notes de cours et les diapositives**. Il y a beaucoup d'information dans les diapositives et ils sont destinés à être examinés plusieurs fois, pas seulement vus une fois pendant le cours.
+
+**4. Slack**
+
+Slack est un forum de discussion en classe où vous pouvez poser des questions sur le matériel, interagir avec vos camarades. Vous pouvez aussi poser directement vos questions sur Moodle. Sachez que vos questions peuvent aider d'autres personnes aussi à comprendre la matière. De même, d'autres personnes peuvent avoir de meilleures réponses à vos questions. 
+
+<!--**5. Heures de bureau du précepteur**
+
+Shay offrira deux heures de bureau chaque semaine. Parce que ce cours suivra de près avec Sociology 400 (une classe avancée de premier cycle), vous pouvez également accéder aux précepteurs (Alex
+Kindel et Ziyao Tian) pour cette classe également pendant leurs deux heures de bureau par semaine. Cela fait six heures d’heures de bureau par semaine de la part du personnel de soutien pédagogique. Bureau de précepteur
+les heures sont souvent très utiles pour obtenir de l'aide avec les problèmes. -->
+
+**5. Heures de bureau**
+
+Mes heures de bureau sont chaque fois que ma porte est ouverte. Vous pouvez venir me parler à tout moment de la classe. Si vous avez besoin de planifier une heure particulière pour me voir, contactez-moi par courrier électronique et nous trouverons une heure qui convient. 
+
+**6. Devoir de maison**
+
+Dès que le devoir est publié en ligne, n'attendez pas avant de commencer. Et ne perdez pas trop de temps à chercher seul ce que vous ne comprenez pas. Au début, je vous conseille vivement de me poser vos questions une fois que vous êtes bloqués plus de 30 minutes sur des problèmes de codes qui ne fonctionnent pas. N;oubliez pas de vous référer au point 3 ci-dessus. Les notions que vous apprenez dans un devoir peuvent revenir dans un autre devoir, apprenez à maîtriser ce que vous faites, et à refaire les devoirs si-possible.
+
+<!--
+**8. Préparation à l'examen final**
+
+Nous organiserons une session de révision de l'examen final au mois de janvier lors de la lecture.
+période. Nous distribuons également un examen final de pratique pendant les vacances d'hiver que vous pouvez utiliser pour:
+évaluez où vous en êtes. 
+
+**9. Services de conseil externes**
+
+Princeton offre de nombreux services de conseil statistique. Q-APS propose des consultations théoriques statistiques et formelles (https://q-aps.princeton.edu). Ce n’est pas vraiment idéal pour l’aide à la résolution de problèmes, mais peut être utile si vous avez juste besoin d’aide pour comprendre un concept plus large.
+-->
+
+**7. Séminaires **
+
+J'organiserai des séminaires méthodologiques les vendredis (ou jeudi dans la soirée) tout au long de la session pour vous apprendre la programmation sous R ou d'autres compétences utilises en méthodes quantitatives. J'inviterai aussi d'autres professeurs ou chercheurs à venir animer ces séminaires. Ce serait des séminaires pratiques. Si vous jugez que vous avez des compétences que vous voulez partagez avec nous, contactez-moi pour que je vous inscrive pour ce séminaire. 
+
+C’est beaucoup de ressources, mais si vous pouvez penser à autre chose qui vous serait utile pour passer du bon moment ensemble, je vous encourage à venir me parler. Encore une fois, si vous êtes prêt à vous y investir, je m’efforcerai à vous accompagner du mieux de mes compétences. 
+
+
+## 4.2 Quelques conseils qui peuvent vous être utiles
+Chaque année, je demande aux étudiants de donner des conseils aux futures générations d’étudiants. Voici quelques conseils d’anciens étudiants de premier cycle qui ont répondu «Quel conseil donneriez-vous à un autre étudiant qui envisage de suivre ce cours?». Je pense que le conseil est excellent et qu’il peut être utile à vous aussi. Ces conseils proviennent de mon autre cours. À la fin de la session, je vous poserez la même question.
+
+- Être prêt à passer beaucoup de temps sur la matière
+- Posez des questions si vous ne savez pas ce qui se passe!
+- Étudiez et travaillez fort, passez en revue les diapositives.
+- Investir un temps considérable pour se familiariser avec R et ses divers outils sera rentable à long terme!
+- Passez en revue les diapositives de la matière chaque semaine. 
+- C’est un défi, mais très faisable et gratifiant si vous y consacrez du temps. Il existe de nombreuses ressources à exploiter.
+- Prenez ce cours, vous ne le regretterez pas!
+- Ce sera difficile mais vous apprendrez beaucoup.
+- Veuillez suivre ce cours pour intégrer les statistiques aux sciences sociales. J'ai trouvé le cours très pratique (beaucoup de R) et complet. La petite taille des classes est également une excellente ressource pour obtenir une assistance individuelle dans un cours très quantitatif. De plus, si vous envisagez des études supérieures ou de la recherche, ce cours est efficace pour intégrer des questions de recherche tout au long.
+- Ce cours est très stimulant mais a grandement contribué à ma compréhension des statistiques sociales. Si vous êtes vraiment investi dans le sujet et êtes prêt à travailler (plus que ce à quoi vous vous attendiez)
+éventuellement), ce sera l’un des meilleurs cours que vous aurez suivi.
+- C’est un cours dans lequel vous apprendrez beaucoup et passerez le plus clair de votre temps à faire les codes. \
+
+
+<!--\bmdframed-->
+
+>---
+
+> **PRÉCISIONS AU SUJET DE L’ENTENTE D’ÉVALUATION À L’UQAM**
+
+> Une entente est signée par l’enseignant.e et les étudiant.e.s du cours dans les deux premières semaines du cours. Cette entente porte uniquement sur les aspects suivants :
+
+> 1.	le nombre et les échéances des évaluations;
+
+> 2.	la pondération respective des contenus ou objets d’évaluation dans l’évaluation globale du cours
+
+> Pour tout renseignement supplémentaire, il est possible de consulter les documents suivants:
+
+> - Pour le premier cycle: Règlement 5 de l’UQAM, article 7.9
+> https://instances.uqam.ca/wp-content/uploads/sites/47/2017/12/REGLEMENT_NO_5.pdf
+
+> - Pour les cycles supérieurs: Règlement 8 de l’UQAM, article 9.4
+> https://instances.uqam.ca/wp-content/uploads/sites/47/2017/12/REGLEMENT_NO_8.pdf
+
+>---
+<!--\emdframed -->
+
+
+\newpage
+\blandscape
+
+# 6. Calendrier
+
+
+
+Sem  | Date          |Description               |  Matériels de cours     |   Évènement     |  Délai
+-----| ------------- |--------------------------- | ------------------------ | --------------- |-----------
+**Première partie** |
+1    |     Lun 9 sept |   Présentation du cours   |    1. [Salganik](https://www.bitbybitbook.com/en/1st-ed/introduction/) |        |
+     |                  |     | Introduction à R
+2   | Lun 16 sept |Survol de l'analyse descriptive avec R      
+2   |      Lun 23 sept |  Causalité   |            1. Morgan (chap 1)      |   Devoir 1
+     |                 |              |         |   2. Morgan (chap 2)
+3   |      Lun 30 sept |   Causalité (Suite et fin) |
+4   |  Lun 7 oct | Régression linéaire |                   | Devoir 2 |   Rendu D1
+6   | Lun 14 oct | Thanksgiving, cours reporté 
+    |            |         |Régression linéaire |          
+7  | Lun 21 oct | Régression linéaire (fin) |           | Devoir 3 | Rendu D2
+8  | Lun 28 oct | Régression logistique  |     |
+9  | Lun 4 nov  | Modèles multiniveaux (introduction) |     | Devoir 4 | Rendu D3
+**Deuxième partie** |
+10 | Lun 11 nov  | Collecte de données numériques  |
+11  | Lun 18 nov | Analyse de texte  |       | Devoir 5 | Rendu D4
+12 | Lun 25 nov | Analyse de texte (fin) |
+13 | Lun 2 déc | Analyse de réseaux|     | Devoir 6 | Rendu D5
+14 | Lun 7 déc | Analyse de réseaux (fin) |
+15 | Lun 14 déc | Conclusion   |       |  | Rendu D6
+
+
+<!--
+
+Sem  | Date          |Description               |  Matériels de cours     |   Évènement     |  Délai
+-----| ------------- |--------------------------- | ------------------------ | --------------- |-----------
+**Première partie** |
+1    |     Lun 9 sept |   Présentation du cours   |    1. [Salganik](https://www.bitbybitbook.com/en/1st-ed/introduction/) |        |
+     |                  |     | Introduction
+2   |      Lun 16 sept |  Causalité   |            1. Morgan (chap 1)      |   Devoir 1
+     |                 |              |         |   2. Morgan (chap 2)
+3   |      Lun 23 sept |   Causalité (Suite et fin) |
+4   |  Lun 30 sept | Biais de mesure |                   | Devoir 2 |   Rendu D1
+5   | Lun 7 oct | Échantillonnage |
+6   | Lun 14 oct | Thanksgiving |
+**Deuxième partie** |
+7  | Lun 21 oct | Rapide survol de l'analyse desceiptive |
+8  | Lun 28 oct | Régression linéaire |
+9  | Lun 4 nov  | Régression linéaire |
+10 | Lun 11 nov  | Régression linéaire (extension)  |
+11  | Lun 18 nov | Régression logistique  | 
+12 | Lun 25 nov | Régression logistique (fin) |
+13 | Lun 2 déc | Modèles multiniveaux|
+14 | Lun 7 déc | Modèles multiniveaux (fin) |
+15 | Lun 14 déc | Conclusion
+
+
+
+-->
+
+\elandscape
+
+\newpage
+
+
+# 7. Liste de lectures et d'exercices sur datacamp
+
+## Séance 1: Introduction
+
+**Obligatoire** 
+
+- https://www.bitbybitbook.com/fr/1st-ed/introduction/
+- David Donoho. 2015. “50 Years of Data Science”. In Paper Presented at the Tukey Centennial Workshop. Princeton, NJ. http://courses.csail.mit.edu/18.337/2015/docs/50YearsDataScience.pdf.
+
+**Datacamp**
+
+- Intrduction à R (sur Datacamp)
+- https://juba.github.io/tidyverse/01-presentation.html: chapitres 1 à 5
+- R Markdown 
+  - https://rmarkdown.rstudio.com/lesson-1.html
+  - https://bookdown.org/yihui/rmarkdown/
+  - https://www.rstudio.com/resources/cheatsheets/ on R Markdown, RStudio shortcuts, etc.
+  - https://juba.github.io/tidyverse/01-presentation.html: chapitre 13
+  
+**Facultatif**
+
+- Joshua Blumenstock : [Predicting poverty and wealth from mobile phone metadata](https://science.sciencemag.org/content/sci/350/6264/1073.full.pdf?ijkey=jl1FOo2RaNJQk&keytype=ref&siteid=sci)
+
+
+## Séance 2: Analyse descriptive
+
+**Obligatoire** 
+
+- Pierotti, Rachel. (2013). “Increasing Rejection of Intimate Partner Violence: Evidence of Global Cultural
+Diffusion.” American Sociological Review, 78: 240-265.
+
+**Datacamp**
+
+- Introduction to the Tidyverse (sur datacamp)
+- https://cran.r-project.org/web/packages/summarytools/vignettes/Introduction.html
+
+**Facultatif**
+
+-  Michael F. Schober, Josh Pasek, Lauren Guggenheim, Cliff Lampe, and Frederick G.
+Conrad. 2016. “Social Media Analyses for Social Measurement”. Public Opinion Quarterly 80 (1): 180–211. doi:10.1093/poq/nfv048.
+
+## Séance 3: Causalité
+
+**Obligatoire** 
+
+- Mirna Safi et Patrick Simon. 2013. "Les discriminations ethniques et raciales dans l'enquête *Trajectoires et Origines*: représentations, expériences subjectives et situations vécues. Économie et Statistiques, No 464-465-466.
+
+**Datacamp**
+
+- Data visualisation with ggplot2 (Part 1)
+- Importing data in R (Part1)
+
+
+
+**Facultatif**
+
+- Gerber, Alan S. and Donald P. Green, Field Experiments: Design, Analysis, and Interpretation. Chapters 1 and 2.
+- Stephen, Morgan & Chistopher Winship. 2018. Counterfactuals and Causal Inference: methods and principles for Social research, 2rd edition. Chapter 1.
+
+
+## Séance 4: Causalité
+
+**Obligatoire** 
+
+- Shelley, Clark et al. 2019. ["The Impact of Childcare on Poor Urban Women’s Economic Empowerment in Africa"](https://link.springer.com/article/10.1007%2Fs13524-019-00793-3). Demography, 56, 4.
+
+**Datacamp**
+
+- Data visualisation with ggplot2 (Part 2)
+- Importing data in R (Part2)
+
+
+**Facultatif**
+
+- Stephen, Morgan & Chistopher Winship. 2018. Counterfactuals and Causal Inference: methods and principles for Social research, 2rd edition. Chapter 2.
+
+
+## Séance 5: Régression linéaire
+
+
+
+**Obligatoire** 
+
+
+**Datacamp**
+
+- https://r4ds.had.co.nz/transform.html: chapter 5
+- https://jrnold.github.io/qss-tidy/prediction.html#linear-regression
+
+**Facultatif**
+
+
+
+## Séance 6: Régression linéaire
+
+**Obligatoire** 
+
+**Datacamp**
+
+- Exploratory data analysis in R: Case study
+- https://r4ds.had.co.nz/functions.html
+- https://jennybc.github.io/purrr-tutorial/
+
+**Facultatif**
+
+
+## Séance 7: Régression linéaire
+
+**Obligatoire** 
+
+**Datacamp**
+
+- Multiple and logistic regression: Multiple regression
+- http://adv-r.had.co.nz/Data-structures.html
+
+**Facultatif**
+
+
+## Séance 8: Régression logistique
+
+**Obligatoire** 
+
+**Datacamp**
+
+- Multiple and logistic regression: Logistic regression
+
+**Facultatif**
+
+
+## Séance 9: Modèles multiniveaux
+
+**Obligatoire** 
+
+**Datacamp**
+
+- à déterminer
+
+
+**Facultatif**
+
+
+## Séance 10 : Données digitales
+
+**Obligatoire** 
+
+- David Lazer and Jason Radford. 2017. “Data ex Machina: Introduction to Big Data”. Annual Review of Sociology 43:19–39. doi:10.1146/annurev-soc-060116-053457.
+- Christopher Bail. 2014. “The cultural environment: measuring culture with big data”. Theory and Society 43 (3-4): 465–482. doi:10.1007/s11186-014-9216-5.
+
+**Facultatif**
+
+
+## Séance 11: Analyse textuelle
+
+**Obligatoire** 
+
+**Datacamp**
+
+- Introduction to text analysis
+- https://jrnold.github.io/qss-tidy/discovery.html#textual-data
+- https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html
+
+**Facultatif**
+
+
+## Séance 12: Analyse textuelle
+
+**Obligatoire** 
+
+**Datacamp**
+
+- à déterminer
+
+**Facultatif**
+
+
+## Séance 13: Analyse de réseaux
+
+**Obligatoire** 
+
+**Datacamp**
+
+- network analysis
+- Data visualisation with ggplot2 (Part 3)
+
+**Facultatif**
+
+
+
+## Séance 14 : Analyse de réseaux
+
+**Obligatoire** 
+
+- https://jrnold.github.io/qss-tidy/discovery.html#network-data
+- Katherine Ognyanova. 2017. Network visualization with R. http://kateto.net/network-visualization.
+
+**Facultatif**
+
+
+
+## Séance 15: Conclusion
+
+**Obligatoire** 
+
+**Datacamp** (Si possible)
+
+- Introduction to machine learning
+- Machine learning toolbox
+
+
+**Facultatif**
+
+
+## 8.Inspiration
+
+Ce cours s’est appuyé en grande partie sur le cours de méthodes que j’ai enseigné à la University of Cape Town au cours des 5 dernières années. Il a été révisé plusieurs fois et est toujours dans son développement. Les changements de ce cours et l'utilisation de R ont été influencés par un certain nombre de livres que j'ai lu ou par des discussions que j’ai eu avec des enseignants passionnés: Matthew Salganik, Kosuke Imai, Brandon Steward, Chris Bail, et Thomas LeGrand. 
+
+
+
+
+
+
+================
+Syllabus : Apprentissage Automatique (Machine Learning) avec R - Niveau Maîtrise
+Objectifs du cours :
+Comprendre les concepts fondamentaux de l'apprentissage automatique.
+Apprendre à implémenter et évaluer différents algorithmes de machine learning en utilisant R.
+Explorer des applications pratiques et avancées du machine learning.
+Développer des compétences en utilisation des packages R dédiés au machine learning.
+Prérequis :
+Connaissances de base en R et en statistiques.
+Connaissances en algèbre linéaire et en calcul différentiel sont recommandées.
+Session 1 : Introduction et concepts de base
+Contenu :
+Introduction à l'apprentissage automatique
+Types d'apprentissage : supervisé, non supervisé, semi-supervisé, par renforcement
+Cycle de vie d'un projet de machine learning
+Préparation des données
+Travail pratique : Introduction aux packages tidyverse et data.table pour la manipulation des données.
+Session 2 : Régression linéaire
+Contenu :
+Concept de la régression linéaire
+Méthode des moindres carrés
+Évaluation des performances : RMSE, MAE, R²
+Travail pratique : Implémentation de la régression linéaire avec lm() et visualisation avec ggplot2.
+Session 3 : Régression logistique
+Contenu :
+Concept de la régression logistique
+Fonction sigmoïde et probabilités
+Coût et optimisation (descente de gradient)
+Travail pratique : Classification binaire avec la régression logistique en utilisant glm().
+Session 4 : Algorithmes de classification
+Contenu :
+k-Nearest Neighbors (k-NN)
+Support Vector Machines (SVM)
+Arbres de décision et forêts aléatoires
+Travail pratique : Utilisation des packages class pour k-NN, e1071 pour SVM, et randomForest pour les forêts aléatoires.
+Session 5 : Évaluation et validation
+Contenu :
+Techniques de validation croisée
+Métriques de performance : précision, rappel, F1-score, courbe ROC-AUC
+Problèmes de surapprentissage et sous-apprentissage
+Travail pratique : Utilisation du package caret pour la validation croisée et l'évaluation des modèles.
+Session 6 : Réseaux de neurones et deep learning (partie 1)
+Contenu :
+Introduction aux réseaux de neurones
+Perceptron multicouche (MLP)
+Fonction d'activation et propagation avant
+Travail pratique : Implémentation d'un MLP simple avec le package keras.
+Session 7 : Réseaux de neurones et deep learning (partie 2)
+Contenu :
+Entraînement des réseaux de neurones (backpropagation)
+Optimisation et régularisation
+Réseaux convolutionnels (CNN) pour le traitement des images
+Travail pratique : Création et entraînement d'un CNN pour la classification d'images avec keras.
+Session 8 : Clustering et méthodes non supervisées
+Contenu :
+Introduction au clustering
+Algorithmes : k-means, DBSCAN, agglomératif
+Réduction de dimensionnalité : PCA, t-SNE
+Travail pratique : Application du clustering avec stats et dbscan, et de la réduction de dimensionnalité avec prcomp et Rtsne.
+Session 9 : Traitement du langage naturel (NLP)
+Contenu :
+Introduction au NLP
+Représentation des textes : sac de mots, TF-IDF, word embeddings
+Modèles de langage : RNN, LSTM
+Travail pratique : Analyse de sentiments sur des textes avec les packages tm, text2vec, et keras pour les RNN.
+Session 10 : Apprentissage par renforcement
+Contenu :
+Concepts de base de l'apprentissage par renforcement
+Environnement, agent, état, action, récompense
+Algorithmes : Q-learning, SARSA
+Travail pratique : Implémentation d'un agent simple en utilisant le package reinforcelearn.
+Session 11 : Applications avancées et cas pratiques
+Contenu :
+Applications en vision par ordinateur, NLP, systèmes de recommandation
+Étude de cas réels et projets industriels
+Défis et opportunités du machine learning
+Travail pratique : Développement d'un projet de machine learning en groupe.
+Session 12 : Conclusion et perspectives
+Contenu :
+Révisions et discussion sur les avancées récentes du domaine
+Perspectives de carrière dans le machine learning
+Présentation des projets de groupe
+Travail pratique : Présentation et évaluation des projets finaux.
+Ressources et matériel recommandé :
+Livres :
+"An Introduction to Statistical Learning" de Gareth James, Daniela Witten, Trevor Hastie, et Robert Tibshirani
+"Deep Learning with R" de François Chollet et J. J. Allaire
+Sites web :
+R-bloggers
+Coursera
+Kaggle
+Évaluation :
+Projets de groupe : 40%
+Exercices pratiques : 30%
+Examen final : 30%
+

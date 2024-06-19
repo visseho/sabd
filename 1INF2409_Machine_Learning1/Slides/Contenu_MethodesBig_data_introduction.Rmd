@@ -1,0 +1,75 @@
+---
+title: "Big data"
+subtitle: "Modélisation et analyses"
+author: "Visseho Adjiwanou, PhD."
+date: '`r format(Sys.time(), "%d %B %Y")`'
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+geometry: margin=2.54cm
+fontsize: 12pt
+header-includes:
+- \newcommand{\bcenter}{\begin{center}}
+- \newcommand{\ecenter}{\end{center}}
+- \usepackage{mdframed}
+- \newcommand{\bmdframed}{\begin{mdframed}}
+- \newcommand{\emdframed}{\end{mdframed}}
+- \usepackage{lscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+---
+
+## Description
+
+Ce cours vous présente quelques méthodes utilisées en Big Data. Il s'agit :
+
+- des techniques de la visualisation (2INF2408 : Data visualisation - 12h)
+- de l'apprentissage automatique I (1INF2409 : Machine learning I - 12h)
+- de l'apprentissage automatique II (2INF2409 : Machine learning II - 12h), et 
+- du text mining (3INF2409 : Text mining - 12h)
+
+Il s'agit au total de 48 heures de cours. 
+
+## Programmation des journées
+
+**Jour 1: Visualisation (10 heures)** - Mardi
+
+  -  8h - 10h : Introduction au cours et présentation
+  - 10h - 12h : Big Data - forces et faiblesses (discussion autour du texte de Salganik)
+  - 14h - 16h : Notions théoriques de cours sur la visualisation
+  - 16h - 18h : Notions pratiques (Labo)
+  - 18h - 20h : Exercices
+
+**Jour 2: Machine Learning I (10 heures)** - Mercredi
+
+  -  8h - 10h : Discussion autour du chapitre de Salganik (https://www.bitbybitbook.com/fr/1st-ed/observing-behavior/ )
+  - 10h - 12h : Notions théoriques (méthodes supervisées)
+  - 14h - 16h : Notions pratiques (Labo)
+  - 16h - 18h : Exercices de groupes supervisés (Aoudou)
+  - 18h - 20h : Exercices
+
+**Jour 3: Machine Learning II (10 heures)** - Jeudi
+
+  -  8h - 10h : Discussion autour du chapitre de Salganik (https://www.bitbybitbook.com/fr/1st-ed/running-experiments/)
+  - 10h - 12h : Notions théoriques (méthodes non supervisées)
+  - 14h - 16h : Notions pratiques (Labo)
+  - 16h - 18h : Exercices de groupes supervisés (Aoudou)
+  - 18h - 20h : Exercices
+
+**Jour 4: Text mining (10 heures)** - Vendredi
+
+  -  8h - 10h : Notions théoriques
+  - 10h - 12h : Notions pratiques (Labo)
+  - 14h - 16h : Notions pratiques (Labo)
+  - 16h - 18h : Exercices de groupes supervisés (Aoudou)
+  - 18h - 20h : Exercices
+
+
+**Jour 5: Text mining et Machine Learning II (8 heures)** - Samedi
+
+  -  8h - 10h : Text mining - Extension (Labo)
+  - 10h - 12h : Notions théoriques machine learning (Extension)
+  - 14h - 16h : Notions théoriques et pratiques machine learning (Aoudou) 
+  - 16h - 18h : Exercices de groupes (Labo - Aoudou)
+

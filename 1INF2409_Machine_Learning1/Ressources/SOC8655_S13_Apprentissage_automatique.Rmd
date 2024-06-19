@@ -1,0 +1,35 @@
+---
+title: 'Séance 13: Apprentissage automatique'
+#subtitle: "Régression logistique"
+author: "Visseho Adjiwanou, PhD."
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  beamer_presentation:
+    colortheme: beaver
+    fonttheme: structurebold
+    theme: Antibes
+  slidy_presentation: default
+  ioslides_presentation: default
+---
+
+
+## Plan de présentation
+
+- Introduction
+- What is machine learning
+- Exemple of commercial machine learnings
+- The machine learning process
+- Problem formulation
+- Methods
+
+
+## Problem formulation
+
+1. supervised learning
+  - Classification
+  - prediction
+  - regression
+  
+2. Unsupervised learning
+  - Clustering
+  - principal component analysis

@@ -1,0 +1,16 @@
+---
+title: 'Machine learning'
+subtitle: "Session 2: Introduction et concepts de base"
+author: "Visseho Adjiwanou, PhD."
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  beamer_presentation:
+    colortheme: beaver
+    fonttheme: structurebold
+    theme: Antibes
+  slidy_presentation: default
+  ioslides_presentation: default
+---
+
+## Plan de présentation
+
