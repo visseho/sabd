@@ -216,7 +216,7 @@ avec (e = Y-Y')
 
 #### 2.1.2.4. Évaluation des performances
 
-RMSE, MAE, R²
+MSE, R²
 
 
 
@@ -240,14 +240,59 @@ RMSE, MAE, R²
 
 #### 2.1.3.2. Types de régularisation
 
-- Régression ridge
 - Régression Lasso
+- Régression ridge
 - Régression Elastic Net
 
-#### 2.1.3.2.1. Régression Ridge ou L2
+
+#### 2.1.3.2.1. Régression Lasso OU L1
+
+
+**1. Principe de la régularisation L1**
+
+- LASSO: Least Absolute Shrinkage and Selection Operator
+- La régression Lasso ajoute une pénalité L1 à la fonction de coût de la régression. 
+- La pénalité L1 impose une contrainte plus forte sur les coefficients de régression, *en les poussant à zéro pour  certains coefficients.*
+- Cette méthode permet de selectionner automatiquement les variables les plus importantes et de réduire la dimensionnalité du modèle. 
+
+**2. Fonction de coût**
+
+$$
+\sum_{i=1}^n{(Y_i - X\beta|_i)^2}+ \lambda \sum_{j=1}^p |\beta_j|, 0 \leq \lambda \leq 1.
+$$
+
+- Faire une régression Lasso c'est donc résoudre le problème d'optimisation suivant :
+
+$$
+\text{Minimiser} \sum_{i=1}^n{(Y_i - X\beta|_i)^2} \text{sous la contrainte} \sum_{j=1}^p |\beta_j| \leq s
+$$
+
+**3. Effets de la pénalité** 
+
+
+- **Régularisation** : La pénalité $\lambda \sum_{j=1}^p |\beta_j|$ contraint certains coefficients $\beta_j$ à être exactement égaux à zéro lorsque $\lambda$ est suffisamment grand. Cela simplifie le modèle en éliminant les **variables non pertinentes**.
+
+- **Sélection de variables** : Comme certains coefficients deviennent exactement nuls, LASSO effectue une sélection de variables. Seules les variables avec des coefficients non nuls sont retenues dans le modèle final.
+
+- **Réduction de la variance** : En réduisant certains coefficients, LASSO peut aider à diminuer la variance du modèle, ce qui améliore la capacité du modèle à généraliser sur des données nouvelles.
+
+**4. Choix du paramètre $\lambda$** 
+
+- Le paramètre $\lambda$ est crucial et doit être choisi avec soin. Une méthode courante pour sélectionner $\lambda$ est la validation croisée. Par cette méthode, on évalue les performances du modèle pour différentes valeurs de $\lambda$ et on choisit celle qui minimise l'erreur de validation.
+
+**5. Interprétation des résultats**
+
+- Coefficients non nuls : Les variables associées à des coefficients non nuls sont considérées comme importantes pour la prédiction.
+
+- Coefficients nuls : Les variables associées à des coefficients nuls sont éliminées du modèle, ce qui peut simplifier l'interprétation et réduire le sur-ajustement.
+
+
+
+#### 2.1.3.2.2. Régression Ridge ou L2
 
 **1. Principe de la régularisation L2**
 
+- RIDGE: Ridge Regression 
 - La régression Ridge ajoute une pénalité L2 à la fonction de coût
 - La pénalité L2 ajoute une contrainte sur les coefficients de régression, en les limitants à des valeurs proche de Zéro
 - Ridge permet de réduire la variance du modèle et améliorer la capacité à généraliser
@@ -265,26 +310,41 @@ $$
 \text{Minimiser} \sum_{i=1}^n{(Y_i - X\beta|_i)^2} \text{sous la contrainte} \sum_{j=1}^p \beta_j^2 \leq s
 $$
 
+**- Différence entre LASSO et RIDGE**
 
-#### 2.1.3.2.2. Régression Lasso OU L1
+**1. Sélection de Variables**
 
-**1. Principe de la régularisation L1**
+- LASSO : Peut mettre certains coefficients à zéro, ce qui élimine complètement les variables correspondantes. C'est donc une méthode de sélection de variables.
 
-- La régression Lasso ajoute une pénalité L1 à la fonction de coût de la régression. 
-- La pénalité L1 impose une contrainte plus forte sur les coefficients de régression, *en les poussant à zéro pour  certains coefficients.*
-- Cette méthode permet de selectionner automatiquement les variables les plus importantes et de réduire la dimensionnalité du modèle. 
+- RIDGE : Réduit les coefficients mais ne les met pas à zéro. Toutes les variables restent dans le modèle.
 
-**2. Fonction de coût**
+**2. Régularisation et Complexité du Modèle**
 
-$$
-\sum_{i=1}^n{(Y_i - X\beta|_i)^2}+ \lambda \sum_{j=1}^p |\beta_j|, 0 \leq \lambda \leq 1.
-$$
+- LASSO : Tends à produire des modèles plus simples en éliminant certaines variables, ce qui peut aider à l'interprétabilité.
 
-- Faire une régression Lasso c'est donc résoudre le problème d'optimisation suivant :
+- RIDGE : Réduit la complexité du modèle en réduisant l'ampleur des coefficients, mais garde toutes les variables.
 
-$$
-\text{Minimiser} \sum_{i=1}^n{(Y_i - X\beta|_i)^2} \text{sous la contrainte} \sum_{j=1}^p |\beta_j| \leq s
-$$
+**3. Stabilité et Colinéarité**
+
+- LASSO : Peut être instable lorsque les variables sont fortement corrélées. Dans ce cas, il peut sélectionner arbitrairement une des variables corrélées.
+
+- RIDGE : Fonctionne mieux avec des variables corrélées en répartissant la pénalisation sur les coefficients corrélés.
+
+** 4. Impact de $\lambda$
+
+- LASSO : À mesure que $\lambda$ augmente, plus de coefficients peuvent être réduits à zéro.
+
+- RIDGE : À mesure que $\lambda$ augmente, les coefficients sont progressivement réduits, mais aucun n'atteint exactement zéro.
+
+**- Utilisation en Pratique**
+
+- LASSO : Utilisé lorsque l'on souhaite à la fois la régularisation et la sélection de variables, particulièrement utile dans les cas où certaines variables sont inutiles ou redondantes.
+
+- RIDGE : Utilisé lorsque toutes les variables sont potentiellement utiles et que l'on souhaite simplement régulariser le modèle pour éviter le sur-ajustement.
+
+
+LASSO et RIDGE sont des méthodes de régularisation complémentaires avec des caractéristiques distinctes. Le choix entre elles dépend de la nature des données et des objectifs spécifiques du modèle.
+
 
 #### 2.1.3.2.3. Régression Elastic Net
 
@@ -297,7 +357,7 @@ $$
 $$
 
 - Cette méthode permet de combiner les avantages de la régression Ridge et Lasso, en *réduisant la variance du modèle et en sélectionnant les variables les plus importantes.*
-- Avantages par rapport aux autres méthodes
+
 
 ### 2.1.4. Méthodes d'estimation
 
@@ -639,7 +699,7 @@ Notez que la méthode des plus proches voisins peut facilement être appliquée 
 
 ## 2.4. Machines à vecteurs de support (Support vector machines)
 
-Les machines à vecteurs de support (SVM) sont l'une des méthodes de classification les plus populaires et les plus performantes en apprentissage automatique aujourd'hui. Les mathématiques derrière les SVM nécessitent de nombreuses connaissances préalables <!-- qui dépassent le cadre de ce livre-->, mais nous allons vous donner une intuition sur le fonctionnement des SVM, ce pour quoi elles sont utiles et comment les utiliser.
+Les machines à vecteurs de support (SVM) sont l'une des méthodes de classification les plus populaires et les plus performantes en apprentissage automatique aujourd'hui. Les mathématiques derrière les SVM nécessitent de nombreuses connaissances préalables, mais nous allons vous donner une intuition sur le fonctionnement des SVM, ce pour quoi elles sont utiles et comment les utiliser.
 
 Nous sommes tous familiers avec les modèles linéaires (par exemple, la régression logistique) qui séparent deux classes en ajustant une ligne en deux dimensions (ou un hyperplan dans des dimensions supérieures) au milieu (voir la Figure @ref(fig)). Une décision importante que les modèles linéaires doivent prendre est de savoir quel séparateur linéaire nous devrions préférer lorsqu'il y en a plusieurs que nous pouvons construire.
 
