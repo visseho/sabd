@@ -1,0 +1,307 @@
+---
+title: "Clustering"
+description: |
+  For when we don't really know what we're looking for in our data and just want the computer to tell us what it sees.
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Broadly speaking, we can divide the approaches for modeling text data into two camps: supervised learning and unsupervised learning. [Supervised learning](sentiment-analysis.html) approaches tend to be the most familiar to social scientists -- there is some outcome we'd like to predict, so we fit a function of observable covariates to try and predict it. In the context of text as data, this means we have a set of labeled documents, and we fit a model to see how well we can predict the labels (e.g. predicting the authorship of the [Federalist Papers](federalist-papers.html)).
+
+Unsupervised learning, by comparison, is less about prediction and more about *discovery*. You start with a set of *unlabeled* documents, and ask the computer to see if it can find a sensible way to organize them. Are there patterns of language that distinguish one set of documents from others? What words can help identify a cluster of documents, by appearing within them more frequently than one would expect by chance? These sorts of approaches, which include both clustering and [topic models](LDA.html), require a healthy dose of human judgment to derive meaningful insights, and they often serve as the first stage of a research agenda that moves from discovery to explanation, prediction, and inference.
+
+## K-means Clustering
+
+Chapter 12 of @grimmerTextDataNew2021 introduces the dataset of Congressional press releases that \@grimmerRepresentationalStyleCongress2013 explores in his study of representational style. Using a k-means clustering model, he developed a set of categories to describe these ways that members of Congress communicate with their constituents, discovering new categories that were previously understudied by political scientists. The full dataset is available [here](https://dataverse.harvard.edu/dataset.xhtml?persistentId=hdl:1902.1/14596), and I've included the press releases from Senator Lautenberg on the course repository. Let's load and tidy the data, representing each press release as a bag of word stems.
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(SnowballC)
+
+load('data/press-releases/lautenberg-press-releases.RData')
+
+tidy_press_releases <- df |>
+  # remove the preamble common to each press release
+  mutate(text = str_replace_all(text,
+                                pattern = '     Senator Frank R  Lautenberg                                                                                                                      Press Release        of        Senator Lautenberg                                                                                ',
+                                replacement = '')) |>
+  # tokenize to the word level
+  unnest_tokens(input = 'text',
+                output = 'word') |>
+  # remove stop words
+  anti_join(get_stopwords()) |>
+  # remove numerals
+  filter(str_detect(word, '[0-9]', negate = TRUE)) |>
+  # create word stems
+  mutate(word_stem = wordStem(word)) |>
+  filter(word_stem != '') |> 
+  # count up bag of word stems
+  count(id, word_stem) |> 
+  # compute term frequency
+  bind_tf_idf(term = 'word_stem',
+              document = 'id',
+              n = 'n') |>
+  filter(!is.na(tf_idf))
+
+tidy_press_releases
+```
+
+Next, we'll convert that tidy dataframe into a document-term matrix.
+
+```{r}
+# create document-term matrix
+lautenberg_dtm <- cast_dtm(data = tidy_press_releases,
+                           document = 'id',
+                           term = 'word_stem',
+                           value = 'tf')
+lautenberg_dtm
+```
+
+The k-means clustering algorithm searches for a set of $k$ centroids that yield the smallest sum of squared distances between the observations and their nearest centroid. If each document is represented by a vector of term frequencies, then k-means produces $k$ sets of documents that have the most similar usages of words.[^1]
+
+[^1]: Allison Horst has a delightful illustrated explanation of how the algorithm works on [this page](https://www.tidymodels.org/learn/statistics/k-means/).
+
+```{r, cache = TRUE}
+set.seed(42)
+
+km <- kmeans(x = lautenberg_dtm,
+             centers = 4,
+             nstart = 100)
+
+table(km$cluster)
+```
+
+Making sense of this algorithm's output is tricky. Sure, we simplified the problem a bit. We started with 558 documents, each represented by a 7,073-dimensional vector. Now we have 4 document *clusters*, each represented by a 7,073-dimensional vector.
+
+```{r, echo = FALSE}
+knitr::include_graphics('img/thanks.gif')
+```
+
+So...what do we do with those?
+
+One of the most common ways to interpret the k-means clusters is to generate a list of the most distinctive words from each cluster. Then we can look at which words show up more frequently in one cluster than any other, and use that information to assign labels to the clusters.
+
+```{r}
+# function to find the words that are most overrepresented in the cluster mean for a given cluster
+get_top_words <- function(centers, cluster_of_interest, n = 10){
+  (centers[cluster_of_interest,] - colMeans(centers[-cluster_of_interest,])) |>
+    sort(decreasing = TRUE) |>
+    head(n)
+}
+```
+
+```{r}
+get_top_words(km$centers, 1)
+```
+
+It looks like that first cluster contains words related to New Jersey-specific projects. Maybe we'll call this category "credit claiming".
+
+```{r}
+get_top_words(km$centers, 2)
+```
+
+The second cluster contains words related to security.
+
+```{r}
+get_top_words(km$centers, 3)
+```
+
+The third cluster has words related to various pieces of legislation and Senate business.
+
+```{r}
+get_top_words(km$centers, 4)
+```
+
+And the final cluster looks like the "partisan taunting" category dicussed in the book.
+
+## Validation, Validation, Validation
+
+To validate our manually-assigned cluster labels, we want to go back to the text and check to see if they do a good job summarizing the documents. If not, we should modify our cluster labels or try a different value for $k$.
+
+```{r}
+cluster_assignments <- tibble(id = km$cluster |> 
+                                names() |> 
+                                as.numeric(),
+                              cluster = km$cluster)
+
+df <- df |>
+  left_join(cluster_assignments,
+            by = 'id')
+```
+
+If we pull a random document from Cluster 1, it should be related to New Jersey in some way.
+
+```{r}
+print_text <- function(text){
+  cat(str_wrap(text), sep = '\n')
+}
+
+df |>
+  filter(cluster == 1) |>
+  slice_sample(n = 1) |>
+  pull(text) |> 
+  print_text()
+```
+
+If we pull a random document from Cluster 2, it should be about security.
+
+```{r}
+df |>
+  filter(cluster == 2) |>
+  slice_sample(n = 1) |>
+  pull(text) |> 
+  print_text()
+```
+
+If we pull a random document from Cluster 3, it be about legislation and/or Senate business.
+
+```{r}
+df |>
+  filter(cluster == 3) |>
+  slice_sample(n = 1) |>
+  pull(text) |> 
+  print_text()
+```
+
+And a random document from Cluster 4 should contain some form of "partisan taunting".
+
+```{r}
+df |>
+  filter(cluster == 4) |>
+  slice_sample(n = 1) |>
+  pull(text) |> 
+  print_text()
+```
+
+## Clustering with Word Embeddings
+
+In that last clustering exercise, we represented each document as a vector of word counts. This can lead us astray when the documents are very short but our vocabulary is very large. For example, Senator Lautenberg has a number of press releases that I would classify as being about the environment, but the [Bag of Words](bag-of-words.html) has no idea that words like "preservation", "mercury", and "rivers" might belong in the same category. 
+
+When documents are as brief as these press releases, one could potentially represent them with the average [word embedding](word-embeddings.html) of the words in each document. The k-means clustering algorithm then works in the same way, except that it is assigning clusters within a vector space corresponding to the *meaning* of the documents (in a sense) rather than a vector space that's just counting up the frequency of words.
+
+Let's give it a try, shall we? First, get the word embeddings from the `textdata` package.
+
+```{r}
+library(textdata)
+
+# get the glove embedding vectors
+glove <- embedding_glove6b(dimensions = 100)
+
+# convert to a matrix (it will make the computation easier)
+glove_tokens <- glove$token
+
+glove <- glove |>
+  select(-token) |>
+  as.matrix()
+
+rownames(glove) <- glove_tokens
+
+glove[100:120,1:3]
+```
+
+Next, we'll tokenize the press releases, removing stop words and keeping only the words available in the GloVe lexicon.
+
+```{r}
+# get all the press releases and count up the words for each
+tidy_press_releases <- df |>
+  # get rid of the earlier cluster assignments
+  select(-cluster, -date) |>
+  mutate(text = str_replace_all(text,
+                                pattern = '     Senator Frank R  Lautenberg                                                                                                                      Press Release        of        Senator Lautenberg                                                                                ',
+                                replacement = '')) |>
+  # tokenize to the word level
+  unnest_tokens(input = 'text',
+                output = 'word') |>
+  # remove stop words
+  anti_join(get_stopwords()) |>
+  # remove numerals
+  filter(str_detect(word, '[0-9]', negate = TRUE)) |>
+  # remove the words that aren't in the glove lexicon
+  filter(word %in% glove_tokens)
+```
+
+Next, compute the average word embedding of each word in the document. I'm going to do it with a `for` loop, because I can't think of a more elegant solution.
+
+```{r, cache = TRUE}
+# create an empty matrix called document embeddings
+document_embeddings <- matrix(nrow = nrow(df),
+                              ncol = 100)
+
+for(i in 1:nrow(df)){
+
+  list_of_words <- tidy_press_releases |>
+    filter(id == i) |>
+    pull(word)
+
+  document_embeddings[i,] <- colMeans(glove[list_of_words,])
+
+}
+
+glimpse(document_embeddings)
+```
+
+Now we have a matrix that represents each press release as a 100-dimensional vector. Using k-means, we will identify 6 clusters that best describe those document vectors.
+
+```{r}
+km <- kmeans(x = document_embeddings,
+             centers = 6,
+             nstart = 100)
+
+# merge the cluster assignments back with the documents
+cluster_assignments <- tibble(id = 1:558,
+                              cluster = km$cluster)
+
+df <- df |>
+  # remove the earlier cluster assignment from bag of words
+  select(-cluster) |>
+  left_join(cluster_assignments,
+            by = 'id')
+
+table(df$cluster)
+```
+
+You'll note, if you're playing along at home, that this line of code was *much* quicker than when we estimated k-means on the 7,073-dimensional bag of words vectors. Let's look at the most over-represented words in each cluster.
+
+```{r}
+
+# a function to get the most over-represented words by cluster
+get_top_words <- function(tidy_press_releases, cluster_of_interest){
+  tidy_press_releases |>
+    count(id, word) |>
+    left_join(cluster_assignments, by = 'id') |>
+    mutate(in_cluster = if_else(cluster == cluster_of_interest,
+                                'within_cluster', 'outside_cluster')) |>
+    # count the words in each cluster
+    group_by(in_cluster, word) |>
+    summarize(n = sum(n)) |>
+    pivot_wider(names_from = 'in_cluster',
+                values_from = 'n',
+                values_fill = 0) |>
+    # compute word shares
+    mutate(within_cluster = within_cluster / sum(within_cluster),
+           outside_cluster = outside_cluster / sum(outside_cluster)) |>
+    mutate(delta = within_cluster - outside_cluster) |>
+    arrange(-delta) |>
+    head(10) |>
+    pull(word)
+}
+
+get_top_words(tidy_press_releases, 1)
+get_top_words(tidy_press_releases, 2)
+get_top_words(tidy_press_releases, 3)
+get_top_words(tidy_press_releases, 4)
+get_top_words(tidy_press_releases, 5)
+get_top_words(tidy_press_releases, 6)
+```
+
+These seem like pretty cohesive categories! And now there's a cluster for press releases about the environment, consistent with my earlier hunch.
+
+## Practice Problems
+
+1. Try changing the value of $k$ and see if the cluster assignments seem to improve. Look for cluster labels that are *exclusive* (topics aren't overlapping; words that are supposed to distinguish one cluster don't frequently appear in other clusters) and *cohesive* (it's easy to identify a unique topic for each cluster).
+
+2. When we estimated k-means with document embeddings, the top words in one cluster included 'judge', 'court', and 'alito', which seems pretty cohesive. But they also included 'nfl' and 'iraq', which seem out-of-place. Investigate some of the documents included in this cluster. Is there something linking them together, or is this just a poor fit?
