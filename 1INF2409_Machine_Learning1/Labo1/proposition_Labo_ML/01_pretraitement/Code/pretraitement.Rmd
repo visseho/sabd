@@ -1,8 +1,10 @@
 ---
-title: "Prétraitement des données""
-author: "Aoudou"
+title: "Prétraitement des données"
+author: "Adjiwanou - Aoudou"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r}
